@@ -4,7 +4,7 @@ const WebpackDevServer = require('webpack-dev-server');
 
 const args = process.argv.slice(2);
 const isProd = args.indexOf('-p') !== -1;
-const port = 8080;
+const port = 8088;
 
 const webpackConfig = getWebpackConfig({
   isProd,
