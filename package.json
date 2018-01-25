@@ -41,6 +41,10 @@
     "test:watch:coverage": "npm run test:coverage:watch"
   },
   "dependencies": {
+    "danbi-msgclient": "^0.1.2",
+    "danbi-simplewebrtc": "^0.1.2",
+    "socket.io": "^2.0.4",
+    "socket.io-client": "^2.0.4",
     "xcode": "^1.0.0"
   },
   "devDependencies": {

@@ -17,7 +17,9 @@ class Videos extends Component {
       // var vidSelf = document.querySelector('#vid-self');
       if (vidSelf) {
         vidSelf.srcObject = stream;
-        cordova.plugins.iosrtc.refreshVideos();
+        if (cordova && cordova.plugins && cordova.plugins.iosrtc) {
+          cordova.plugins.iosrtc.refreshVideos();
+        }
         myVidbox.appendChild(vidSelf);
       } else {
         console.error('Could not find the element for my video');

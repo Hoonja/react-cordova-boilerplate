@@ -5,7 +5,11 @@ import Videos from '../components/videos.jsx';
 
 class WebRTC extends Component {
   componentDidMount() {
-    document.addEventListener('deviceready', this.onDeviceReady.bind(this), false);
+    if (cordova !== undefined) {
+      document.addEventListener('deviceready', this.onDeviceReady.bind(this), false);
+    } else {
+      this.turnOnCamera();
+    }    
   }
 
   onDeviceReady = () => {
@@ -14,14 +18,18 @@ class WebRTC extends Component {
       cordova.plugins.iosrtc.registerGlobals();
 
       // load adapter.js
-      const script = document.createElement('script');
-      script.type = 'text/javascript';
-      script.src = 'https://webrtc.github.io/adapter/adapter-latest.js';
-      script.async = false;
-      document.getElementsByTagName("head")[0].appendChild(script);
-
-      this.videos.turnOnCamera();
+      this.turnOnCamera();
     }
+  }
+
+  turnOnCamera = () => {
+    const script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = 'https://webrtc.github.io/adapter/adapter-latest.js';
+    script.async = false;
+    document.getElementsByTagName('head')[0].appendChild(script);
+
+    this.videos.turnOnCamera();
   }
 
   connect = () => {
