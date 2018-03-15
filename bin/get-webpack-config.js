@@ -6,7 +6,14 @@ const nodeExternals = require('webpack-node-externals');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
+const fs = require('fs');
+const appDirectory = fs.realpathSync(process.cwd());
+const resolveApp = relativePath => path.resolve(appDirectory, relativePath);
+
 const rootPath = path.join(__dirname, '..');
+
+const appSrc = resolveApp('src');
+const commonSrc = resolveApp('node_modules/wink_mobile_commons');
 
 let getServerString;
 
@@ -110,12 +117,13 @@ const getWebpackConfig = (options = ({}), privateOptions = ({})) => {
       .concat([
         {
           test: /\.js$/,
-          exclude: /node_modules/,
+          // exclude: /node_modules/,
+          include: [appSrc, commonSrc],
           use: [
             {
               loader: 'babel-loader',
               options: {
-                presets: ['es2015', 'stage-2'],
+                presets: ['es2015', 'stage-2', 'react'],
                 plugins: ['transform-runtime']
               }
             }
@@ -123,7 +131,8 @@ const getWebpackConfig = (options = ({}), privateOptions = ({})) => {
         },
         {
           test: /\.jsx$/,
-          exclude: /node_modules/,
+          include: [appSrc, commonSrc],
+          // exclude: /node_modules/,
           use: [
             {
               loader: 'babel-loader',
@@ -228,7 +237,7 @@ getServerString = options => {
   const { isProd } = options;
   const bundlePath = path.join(rootPath, 'www', `app${isProd ? '.min' : ''}.js`);
 
-  const fs = new MemoryFS();
+  const memoryFs = new MemoryFS();
 
   const compiler = webpack(
     getWebpackConfig(options, { isClientBuild: false })
@@ -236,12 +245,12 @@ getServerString = options => {
 
   let sync = true;
   let data = null;
-  compiler.outputFileSystem = fs;
+  compiler.outputFileSystem = memoryFs;
   compiler.run(err => {
     if (err) {
       throw err;
     }
-    const fileContent = fs.readFileSync(bundlePath).toString('ascii');
+    const fileContent = memoryFs.readFileSync(bundlePath).toString('ascii');
     data = requireFromString(fileContent);
     sync = false;
   });
