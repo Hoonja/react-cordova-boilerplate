@@ -145,7 +145,7 @@ class Login extends React.Component {
                     </Flex.Item>
                     <Flex.Item className="login-input-wrapper">
                         <Tabs tabs={values.tabs} initialPage={1} animated={false} useOnPan={false}>
-                            <div>
+                            <div className="tab-div">
                                 <List className="login-input-list">
                                     <InputItem
                                         {...getFieldProps('username', {
@@ -171,7 +171,7 @@ class Login extends React.Component {
                                 </AgreeItem>
                                 <Button type="primary" onClick={this.onSubmit.bind(this)} className="login-submit-button">로그인</Button>
                             </div>
-                            <div>
+                            <div className="tab-div">
                                 <PhoneNumberLogin showModal={this.showModal.bind(this)} authLogin={this.authLogin.bind(this)}/>
                             </div>
                         </Tabs>

@@ -123,7 +123,9 @@ class PhoneNumberLogin extends React.Component {
             : duration.asMilliseconds();
 
         return (
-            <em className="limit-time">{`유효시간 ${moment(remain, 'x').format('mm:ss')}`}</em>
+            <div className="limit-time">
+                <span>유효시간</span><em>{` ${moment(remain, 'x').format('mm:ss')}`}</em>
+            </div>
         )
     }
 
@@ -167,7 +169,7 @@ class PhoneNumberLogin extends React.Component {
                             />
                         </List>
                     </Flex.Item>
-                    <Flex.Item>
+                    <Flex.Item className="certify-timer">
                         {this.renderTimer()}
                     </Flex.Item>
 
