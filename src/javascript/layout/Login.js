@@ -128,9 +128,9 @@ class Login extends React.Component {
         return (
             <div className="login-container">
                 <Flex direction="column" className="login-wrapper">
-                    <Flex.Item>
+                    <Flex.Item className="login-top-item">
                         <Flex direction="column" className="login-top-contents">
-                            <Flex.Item>
+                            <Flex.Item className="login-top-contents-logo">
                                 <img src={logo} alt="logo" className="logo"/>
                             </Flex.Item>
                             <Flex.Item className="login-top-contents-text">
@@ -143,18 +143,19 @@ class Login extends React.Component {
                             </Flex.Item>
                         </Flex>
                     </Flex.Item>
-                    <Flex.Item>
-                        <Tabs tabs={values.tabs} initialPage={0} animated={false} useOnPan={false}>
+                    <Flex.Item className="login-input-wrapper">
+                        <Tabs tabs={values.tabs} initialPage={1} animated={false} useOnPan={false}>
                             <div>
-                                <List>
+                                <List className="login-input-list">
                                     <InputItem
                                         {...getFieldProps('username', {
                                             rules: [{ required: true, message: '아이디를 입력하세요!'}]
                                         })}
                                         placeholder="아이디"
                                         error={usernameError}
-                                    >아이디</InputItem>
-
+                                    />
+                                </List>
+                                <List className="login-input-list">
                                     <InputItem
                                         {...getFieldProps('password', {
                                             rules: [{ required: true, message: '비밀번호를 입력하세요!'}]
@@ -162,13 +163,13 @@ class Login extends React.Component {
                                         type="password"
                                         placeholder="비밀번호"
                                         error={passwordError}
-                                    >비밀번호</InputItem>
+                                    />
                                 </List>
 
-                                <AgreeItem {...getFieldProps('autoLogin', {initialValue: true})} defaultChecked>
+                                <AgreeItem {...getFieldProps('autoLogin', {initialValue: true})} defaultChecked className="login-checkbox">
                                     로그인 상태 유지
                                 </AgreeItem>
-                                <Button type="primary" onClick={this.onSubmit.bind(this)}>로그인</Button>
+                                <Button type="primary" onClick={this.onSubmit.bind(this)} className="login-submit-button">로그인</Button>
                             </div>
                             <div>
                                 <PhoneNumberLogin showModal={this.showModal.bind(this)} authLogin={this.authLogin.bind(this)}/>

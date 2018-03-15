@@ -9,7 +9,7 @@ import {security as action} from '../redux/actions';
 import { CertifyButton } from '../commons/components';
 import { fetch } from '../redux/actions';
 
-import { InputItem, Button, Checkbox, List } from 'antd-mobile';
+import { InputItem, Button, Checkbox, List, Flex } from 'antd-mobile';
 import {Toast} from "antd-mobile/lib/index";
 import {APICaller} from "wink_mobile_commons/dist/api/index";
 import {api, service, values} from "../commons/configs";
@@ -133,51 +133,59 @@ class PhoneNumberLogin extends React.Component {
         const {humanNameError, onetimePasswordError, send} = this.state;
         return (
             <div>
-                <List>
+                <List className="login-input-list">
                     <InputItem
                         {...getFieldProps('humanMdn')}
                         type="number"
                         maxLength={11}
-                        placeholder="휴대폰번호 입력(-생략)"
-                        labelNumber={7}
-                        extra={
-                            <CertifyButton
-                                humanMdn={form.getFieldValue('humanMdn')}
-                                onClick={this.onClickSend}
-                                duration={duration}
-                                timeOver={this.onTimeOver.bind(this)}
-                                countDown={this.countDown.bind(this)}
-                                showModal={this.props.showModal.bind(this)}
-                                send={send}
+                        placeholder="휴대폰번호(-생략)"
+                    />
+                </List>
+                <Flex direction="row" className="certify-wrapper">
+                    <Flex.Item>
+                        <CertifyButton
+                            humanMdn={form.getFieldValue('humanMdn')}
+                            onClick={this.onClickSend}
+                            duration={duration}
+                            timeOver={this.onTimeOver.bind(this)}
+                            countDown={this.countDown.bind(this)}
+                            showModal={this.props.showModal.bind(this)}
+                            send={send}
+                        />
+                    </Flex.Item>
+                    <Flex.Item>
+                        <List className="login-input-list certify-input">
+                            <InputItem
+                                {...getFieldProps('onetimePassword', {
+                                rules: [{required: true, message: '인증번호를 입력하세요!'}]
+                                })}
+                                type="digit"
+                                maxLength={6}
+                                placeholder="인증번호"
+                                disabled={!send}
+                                error={onetimePasswordError}
                             />
-                        }
-                    />
-                    <InputItem
-                        {...getFieldProps('onetimePassword', {
-                            rules: [{required: true, message: '인증번호를 입력하세요!'}]
-                        })}
-                        type="digit"
-                        maxLength={6}
-                        placeholder="인증번호 입력"
-                        disabled={!send}
-                        error={onetimePasswordError}
-                        labelNumber={7}
-                        extra={this.renderTimer()}
-                    />
+                        </List>
+                    </Flex.Item>
+                    <Flex.Item>
+                        {this.renderTimer()}
+                    </Flex.Item>
+
+                </Flex>
+                <List className="login-input-list">
                     <InputItem
                         {...getFieldProps('humanName', {
                             rules: [{required: true, message: '이름을 입력하세요!'}]
                         })}
-                        placeholder="이름 입력"
-                        labelNumber={7}
+                        placeholder="이름"
                         error={humanNameError}
                     />
                 </List>
 
-                <AgreeItem {...getFieldProps('autoLogin', {initialValue: true})} defaultChecked>
+                <AgreeItem {...getFieldProps('autoLogin', {initialValue: true})} defaultChecked className="login-checkbox">
                     로그인 상태 유지
                 </AgreeItem>
-                <Button type="primary" onClick={this.onSubmit.bind(this)} disabled={!send} >로그인</Button>
+                <Button type="primary" onClick={this.onSubmit.bind(this)} disabled={!send} className="login-submit-button" >로그인</Button>
             </div>
         );
     }

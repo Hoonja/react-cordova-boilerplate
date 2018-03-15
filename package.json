@@ -163,7 +163,7 @@
         "extends": "react-app"
     },
     "theme": {
-        "hd": "0.9px",
+        "hd": "1px",
         "brand-primary": "#00bbd4",
         "fill-body": "#ffffff"
     }
