@@ -124,6 +124,7 @@ const serverUrl = {
 
 const storageKey = {
     AUTH_TOKENNAME: '__MEMBER:AUTH_TOKENNAME:' + window.location.hostname.toLocaleUpperCase(),
+    PUSH_IDS_IOS: '__PUSH:IDS_IOS',
 };
 
 const actorType = {

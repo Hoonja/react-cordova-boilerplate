@@ -18,6 +18,12 @@ export const api = {
         url : `/item/items/temporary_device_mapping/`,
         params : {...params}
     }),
+    sendPushMessage : (params = null) => ({
+        url : `/account/actors/send_mobile_push/`,
+        params: {
+            ...params
+        }
+    })
 };
 
 

@@ -1,7 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import studentM from '../../../resource/student_m.png';
+import studentW from '../../../resource/student_w.png';
 
 import { api, service } from '../../commons/configs';
+import { CustomIcon } from '../../commons/components';
 import { fetch } from '../../redux/actions';
 import { path } from '../../commons/configs';
 import { push } from 'react-router-redux';
@@ -102,22 +105,33 @@ class StudentList extends React.Component {
         ]);
     }
 
-    render() {
+    renderStudent(inx) {
         const {students} = this.props;
+        if(students.length >= inx) {
+            const student = students[inx-1];
+            return (
+                <Item
+                    thumb={service.getValue(student, 'sdata.authDetail.isMail', false) ? studentM : studentW}
+                    extra={
+                      <CustomIcon type="FaPhone" roots="FontAwesome" className="call-button" onClick={e => this.confirmModal(e, student)}/>
+                    }>
+                    <span onClick={e => this.confirmModal2(e, student)}>{student.authHumanName}</span>
+                </Item>
+            )
+        } else {
+            return (
+                <Item></Item>
+            )
+        }
+    }
 
+    render() {
         return (
             <div>
-                <List renderHeader={() => ''} className="main-student-list">
-                    {students.map((item, index) => {
-                        return (
-                            <Item key={index}
-                                  extra={
-                                      <Button type="primary" size="small" onClick={e => this.confirmModal(e, item)}>전화 걸기</Button>
-                                  }>
-                                <span onClick={e => this.confirmModal2(e, item)}>{item.authHumanName}</span>
-                            </Item>
-                        )
-                    })}
+                <List className="main-student-list">
+                    {this.renderStudent(1)}
+                    {this.renderStudent(2)}
+                    {this.renderStudent(3)}
                 </List>
             </div>
         );

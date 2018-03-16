@@ -38,7 +38,13 @@ export const api = {
     }),
     getAuthToken : (id) => ({
         url: `/account/auths/${id}/get_auth_token/`
-    })
+    }),
+    modifyActor : (id, params = null) => ({
+        url: `/account/actors/${id}/modify/`,
+        params: {
+            ...params
+        }
+    }),
 };
 
 

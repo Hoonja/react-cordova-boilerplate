@@ -17,7 +17,7 @@ const list = [
 ];
 
 const footerList = [
-    {id: '100000000', name: '윙크 학부모앱 바로가기', type: 'wink', link : 'https://itunes.apple.com/kr/app/%EC%9C%99%ED%81%AC-%ED%95%99%EB%B6%80%EB%AA%A8/id1294082776?mt=8', level: 0 },
+    {id: '100000000', name: '윙크 학부모앱 바로가기', type: 'MdForward', link : 'https://itunes.apple.com/kr/app/%EC%9C%99%ED%81%AC-%ED%95%99%EB%B6%80%EB%AA%A8/id1294082776?mt=8', level: 0 },
     {id: '200000000', name: '윙크', link : '/main', level: 0 },
     {id: '300000000', name: '설정', type:'FaCog', link : '/setting', level: 0 },
 ];

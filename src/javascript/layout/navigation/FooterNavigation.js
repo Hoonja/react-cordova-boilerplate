@@ -40,13 +40,13 @@ class FooterNavigation extends React.Component {
             case '100000000':
                 return (
                     <a href={tab.link} target="_new" className="navigation-menu">
-                        <img src={icon} alt="icon" className="icon"/>
+                      <CustomIcon type={tab.type} className="custom-icon" /> 윙크 학부모앱
                     </a>
                 );
             case '300000000':
                 return (
                     <NavLink to={ tab.link } className="navigation-menu">
-                        <CustomIcon type={tab.type} roots="FontAwesome" className="custom-icon" />
+                        <CustomIcon type={tab.type} roots="FontAwesome" className="custom-icon" /> 설정
                     </NavLink>
                 )
             default:

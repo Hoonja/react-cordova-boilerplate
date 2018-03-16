@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { StudentList } from './';
+import main from '../../../resource/main.png';
 
 import { Flex, Card } from 'antd-mobile';
 
@@ -25,9 +26,11 @@ class MainContainer extends React.Component {
         const {parent} = this.props;
         return (
             <div>
-                <Flex direction="column" className="login-wrapper">
-                    <Flex.Item className="main-img">
-                        {`안녕하세요, ${parent.humanName}(${parent.userName})님!`}
+                <Flex direction="column" className="main-wrapper">
+                    <Flex.Item className="main-top">
+                        <div className="main-top-hello">안녕하세요,</div>
+                        <div className="main-top-name">{`${parent.humanName}(${parent.userName})님!`}</div>
+                        <img src={main} alt="main" className="main-top-img"/>
                     </Flex.Item>
                     <Flex.Item className="main-student">
                         <StudentList/>

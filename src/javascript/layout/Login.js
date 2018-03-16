@@ -144,7 +144,7 @@ class Login extends React.Component {
                         </Flex>
                     </Flex.Item>
                     <Flex.Item className="login-input-wrapper">
-                        <Tabs tabs={values.tabs} initialPage={1} animated={false} useOnPan={false}>
+                        <Tabs tabs={values.tabs} initialPage={0} animated={false} useOnPan={false}>
                             <div className="tab-div">
                                 <List className="login-input-list">
                                     <InputItem

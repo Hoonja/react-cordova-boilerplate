@@ -43,7 +43,7 @@ class SettingContainer extends React.Component {
     render() {
         return (
             <div>
-                <Flex direction="column" className="login-wrapper">
+                <Flex direction="column" className="setting-wrapper">
                     <Flex.Item className="setting-navbar">
                         <NavBar
                             mode="dark"
@@ -51,26 +51,12 @@ class SettingContainer extends React.Component {
                                 <NavLink to={ path.main } className="setting-navbar-menu">
                                     <CustomIcon roots="FontAwesome" type="FaChevronLeft" />
                                 </NavLink>
-
                             }
-                            rightContent={
-                                <NavLink to={ path.main } className="setting-navbar-menu">
-                                    <CustomIcon roots="FontAwesome" type="FaHome" />
-                                </NavLink>
-
-                            }
+                            className="setting-navbar-title"
                         >설정</NavBar>
                     </Flex.Item>
                     <Flex.Item className="setting-list">
                         <Settings/>
-                    </Flex.Item>
-                    <Flex.Item className="main-help">
-                        <Card>
-                            <Card.Body>
-                                <p>윙크 학부모님 공감센터 <a href="tel:1522-1244">1522-1244</a></p>
-                                <p>월-금요일 10:00~20:00</p>
-                            </Card.Body>
-                        </Card>
                     </Flex.Item>
                 </Flex>
             </div>

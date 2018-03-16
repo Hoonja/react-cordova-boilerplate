@@ -77,21 +77,16 @@ class Settings extends React.Component {
     renderLoginSetting() {
         const {parent} = this.props;
         return (
-            <Card full className="setting-item">
-                <Card.Header
-                    title="로그인"
-                />
-                <List>
-                    <Item
-                        extra={
-                            <Button type="primary" size="small" onClick={e => this.confirmLogout(e)}>로그아웃</Button>
-                        }
-                        >
-                        {parent.humanName}
-                    </Item>
-                </List>
-            </Card>
-        )
+            <List renderHeader={() => '로그인'} className="setting-list-header">
+                <Item
+                    extra={
+                        <Button type="primary" size="small" className="setting-button" onClick={e => this.confirmLogout(e)}>로그아웃</Button>
+                    }
+                >
+                    {`${parent.humanName}(${parent.userName})`}
+                </Item>
+            </List>
+        );
     }
 
     onPushChange(push) {
@@ -101,9 +96,8 @@ class Settings extends React.Component {
     renderPushSetting() {
         const {parent} = this.props;
         return (
-            <Card full className="setting-item">
-                <Card.Header
-                    title="알림 설정"
+            <List renderHeader={() => '알림 설정'} className="setting-list-header">
+                <Item
                     extra={
                         <Switch
                             checked={parent.push}
@@ -111,31 +105,26 @@ class Settings extends React.Component {
                             platform="ios"
                         />
                     }
-                />
-                <List>
-                    <Item>
-                        윙크 영상통화앱에서 PUSH 알람을 받습니다.
-                    </Item>
-                </List>
-            </Card>
+                >
+                    영상통화 PUSH 알람
+                </Item>
+            </List>
         )
     }
 
     renderVersionInfo() {
         return (
-            <Card full className="setting-item">
-                <Card.Header
-                    title="버전정보"
-                />
-                <List>
-                    <Item>
-                        현재 버전       Ver.1.0.1
-                    </Item>
-                    <Item>
-                        최신 버전       Ver.2.0.0
-                    </Item>
-                </List>
-            </Card>
+
+            <List renderHeader={() => '버전정보'} className="setting-list-header">
+                <Item>
+                    <span className="setting-version-title">현재 버전</span>&nbsp;&nbsp;&nbsp;
+                    <span className="setting-version-value">Ver.1.0.1</span>
+                </Item>
+                <Item>
+                    <span className="setting-version-title">최신 버전</span>&nbsp;&nbsp;&nbsp;
+                    <span className="setting-version-value">현재 최신 버전입니다.</span>
+                </Item>
+            </List>
         )
     }
 
@@ -150,9 +139,9 @@ class Settings extends React.Component {
                     <Flex.Item>
                         {this.renderPushSetting()}
                     </Flex.Item>
-                    <Flex.Item>
-                        {this.renderVersionInfo()}
-                    </Flex.Item>
+                    {/*<Flex.Item>*/}
+                        {/*{this.renderVersionInfo()}*/}
+                    {/*</Flex.Item>*/}
                 </Flex>
             </div>
         );
