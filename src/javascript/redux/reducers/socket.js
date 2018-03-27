@@ -14,7 +14,9 @@ const workspace = {
 
 const initialState = {
     status: 'closed',
-    localResource: {},
+    localResource: {
+        audioConfig: values.audioConfig.default
+    },
     remote: {},
     record: {},
     message: {},
@@ -100,14 +102,14 @@ export const socket = (state = initialState, action) => {
         case type.RTC_LOCAL_STREAM:
             return {...state, ...action.payload};
         case type.RTC_LOCAL_RESOURCE_CHANGE:
-            return {...state, ...action.payload};
+            return {...state, localResource: {...state.localResource, ...action.payload.localResource}};
         case type.RTC_LESSON_CONNECT_STATUS:
             return {...state, ...action.payload, camera: values.camera.FACE, point: 0, shared: undefined};
         case type.RTC_REMOTE_APPEND:
             return {...state, remote : {...state.remote, ...action.payload.remote}};
         case type.RTC_REMOTE_REMOVE:
             delete state.remote[action.payload.remote];
-            return {...state, remote : {...state.remote}};
+            return {...state, remote : {...state.remote}, callState: 'remoteRemove'};
         case type.RTC_CAMERA_DID_CHANGE:
             return {...state, ...action.payload};
         case type.RTC_CAMERA_QUALITY_DID_CHANGE:
@@ -120,12 +122,18 @@ export const socket = (state = initialState, action) => {
             return {...state, shared: undefined};
         case type.RTC_LOCAL_SHARE_DID_UPDATE_STEP:
             return {...state, shared: {...state.shared, query: {tabNo: action.payload.item.contentStep}}};
+        case type.RTC_LOCAL_SHARE_DID_UPDATE_EXT:
+            return {...state, shared: {...state.shared, ext: {...action.payload.item}}};
         // case type.RTC_CANVAS_DID_ADD:
         //     return {...state, canvas: {...state.canvas, rtc: action.payload.rtc, stream: action.payload.stream}};
         case type.RTC_CANVAS_WORKSPACE_CHANGE:
             return {...state, canvas: {...state.canvas, workspace: {...state.canvas.workspace, ...action.payload.workspace}}};
         case type.RTC_MANUAL_RECORD_CHANGE:
             return {...state, record: {...state.record, ...action.payload}};
+        case type.RTC_AUDIO_CONFIG_WILL_CHANGE:
+            return {...state, localResource: {...state.localResource, audioConfig: action.payload.audioConfig}}
+        case type.RTC_CONNECT_STATUS:
+            return {...state, ...action.payload, camera: values.camera.FACE, point: 0, shared: undefined};
         default:
             return state;
     }

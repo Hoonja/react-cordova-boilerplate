@@ -32,8 +32,8 @@ const loggerMiddleware = createLogger({
     collapsed: (getState, action, logEntry) => true
 });
 
-// const socket = io(service.getUrl());
-// const socketIoMiddleware = createSocketIoMiddleware(socket, "@@SOCKET/", { execute: execute(socket), eventName: 'message' });
+const socket = io(service.getUrl());
+const socketIoMiddleware = createSocketIoMiddleware(socket, "@@SOCKET/", { execute: execute(socket), eventName: 'message' });
 
 const store = createStore(
     combineReducers({
@@ -43,7 +43,7 @@ const store = createStore(
     applyMiddleware(
         middleware,
         thunkMiddleware,
-        // socketIoMiddleware,
+        socketIoMiddleware,
         loggerMiddleware
     )
 );

@@ -1,10 +1,10 @@
 import {socket as type} from '../types';
 
-export const connect = (actorId) => {
+export const connect = (params) => {
     return {
         type: type.SOCKET_CONNECT,
         payload: {
-            actorId
+            ...params
         }
     }
 };
@@ -198,6 +198,24 @@ export const didChangeCameraQuality = (quality) => {
     }
 };
 
+export const willChangeAudioConfig = (audioConfig) => {
+    return {
+        type: type.RTC_AUDIO_CONFIG_WILL_CHANGE,
+        payload: {
+            audioConfig
+        }
+    }
+};
+
+export const changeAudioConfig = (item) => {
+    return {
+        type: type.RTC_AUDIO_CONFIG_CHANGE,
+        payload: {
+            item
+        }
+    }
+};
+
 export const sendPoint = (item, point) => {
     return {
         type: type.RTC_POINT_SEND,
@@ -248,6 +266,15 @@ export const finishContentShare = (item) => {
 export const updateStepContentShare = (item) => {
     return {
         type: type.RTC_LOCAL_SHARE_DID_UPDATE_STEP,
+        payload: {
+            item
+        }
+    }
+};
+
+export const updateExtContentShare = (item) => {
+    return {
+        type: type.RTC_LOCAL_SHARE_DID_UPDATE_EXT,
         payload: {
             item
         }
@@ -312,6 +339,32 @@ export const changeSketcher = (item) => {
 export const changeSketcherWithoutAck = (item) => {
     return {
         type: type.RTC_SKETCHER_NO_ACK_CHANGE,
+        payload: {
+            item
+        }
+    }
+};
+
+export const rtcConnect = (item) => {
+    return {
+        type: type.RTC_CONNECT,
+        payload: {
+            item
+        }
+    }
+};
+export const rtcConnectStatus = (status) => {
+    return {
+        type: type.RTC_CONNECT_STATUS,
+        payload: {
+            status
+        }
+    }
+};
+
+export const rtcDisconnect = (item) => {
+    return {
+        type: type.RTC_DISCONNECT,
         payload: {
             item
         }

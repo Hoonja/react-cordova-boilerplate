@@ -18,8 +18,8 @@
     function init() {
       const uagentLow = navigator.userAgent.toLocaleLowerCase();
       console.info('agent info: ' + uagentLow);
-      
-      if (~uagentLow.indexOf('iphone') || (~uagentLow.indexOf('android') && ~uagentLow.indexOf('wv'))) {
+
+      if (~uagentLow.indexOf('iphone') || (~uagentLow.indexOf('android'))) {
         var scriptTag = document.createElement('script');
         scriptTag.setAttribute('src', './cordova.js');
         document.head.appendChild(scriptTag);
@@ -35,5 +35,5 @@
     }
     init();
   </script>
-  <script type="text/javascript" src="/static/js/main.js"></script></body>
+</body>
 </html>

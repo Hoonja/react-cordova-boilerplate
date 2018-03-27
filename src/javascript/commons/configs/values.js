@@ -136,6 +136,37 @@ const tabs = [
     { title: '휴대폰번호 로그인' },
 ];
 
+export const mediaConfig = {
+    video: {
+        facingMode: {ideal: 'user'},
+        width: {ideal: 280 },
+        height: {ideal: 210 }
+    },
+    audio: {
+        sampleRate: {ideal: 16000},
+        sampleSize: {ideal: 16},
+        latency: {ideal: 1.5},
+    }
+};
+export const audioConfig = {
+    typeA: {
+        echoCancellation: {exact: true},
+        autoGainControl: {exact: false},
+        noiseSuppression: {exact: true},
+    },
+    typeB: {
+        echoCancellation: {exact: false},
+        autoGainControl: {exact: false},
+        noiseSuppression: {exact: false},
+    }
+};
+
+export const configOptions = [
+    {id: 'typeA', label: 'A'},
+    {id: 'typeB', label: 'B'},
+];
+audioConfig.default = audioConfig.typeB;
+
 const reg = {
     mdn: /^(01[016789]{1}|02|0[3-9]{1}[0-9]{1})-?[0-9]{3,4}-?[0-9]{4}$/
 };
@@ -155,6 +186,9 @@ export default {
     qualityOptions,
     point,
     mediaResource,
+    mediaConfig,
+    audioConfig,
+    configOptions,
     AUTO_SAVE_INTERVAL,
     storageKey,
     actorType,

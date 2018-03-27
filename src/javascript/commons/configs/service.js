@@ -30,7 +30,8 @@ export const service = {
         const {protocol, hostname, pathname} = window.location;
         const local = 'client.local.danbi';
 
-        return 'https://msg.danbi.biz/users';
+        return 'http://127.0.0.1:27070/users';
+        // return 'https://msg.danbi.biz/users';
 
         if(hostname.indexOf('admin') === 0) {
             window.location.href = `${protocol}//${hostname.replace('admin', 'teacher')}${pathname}`;

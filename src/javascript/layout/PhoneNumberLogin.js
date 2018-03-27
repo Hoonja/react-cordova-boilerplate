@@ -9,7 +9,7 @@ import {security as action} from '../redux/actions';
 import { CertifyButton } from '../commons/components';
 import { fetch } from '../redux/actions';
 
-import { InputItem, Button, Checkbox, List, Flex } from 'antd-mobile';
+import { InputItem, Button, Checkbox, List, Flex, WhiteSpace } from 'antd-mobile';
 import {Toast} from "antd-mobile/lib/index";
 import {APICaller} from "wink_mobile_commons/dist/api/index";
 import {api, service, values} from "../commons/configs";
@@ -135,6 +135,7 @@ class PhoneNumberLogin extends React.Component {
         const {humanNameError, onetimePasswordError, send} = this.state;
         return (
             <div>
+                <WhiteSpace size="lg" />
                 <List className="login-input-list">
                     <InputItem
                         {...getFieldProps('humanMdn')}

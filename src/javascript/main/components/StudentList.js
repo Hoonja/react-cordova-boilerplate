@@ -14,13 +14,14 @@ import { APICaller } from 'wink_mobile_commons/dist/api';
 
 const Item = List.Item;
 
-const mapStateToProps = ({ fetch, security }) => {
+const mapStateToProps = ({ fetch, security, socket }) => {
     const students = (service.getValue(fetch, 'multipleList.familyMembers.results') || []).filter(item => item.modelType === 1);
     return {
         item: fetch.item,
         parent: security.actor,
         room: service.getValue(fetch, 'multipleList.room', {}),
-        students
+        students,
+        socket
     }
 };
 const mapDispatchToProps = (dispatch) => {
@@ -113,7 +114,7 @@ class StudentList extends React.Component {
                 <Item
                     thumb={service.getValue(student, 'sdata.authDetail.isMail', false) ? studentM : studentW}
                     extra={
-                      <CustomIcon type="FaPhone" roots="FontAwesome" className="call-button" onClick={e => this.confirmModal(e, student)}/>
+                      <CustomIcon type="MdPhone" className="call-button" onClick={e => this.confirmModal(e, student)}/>
                     }>
                     <span onClick={e => this.confirmModal2(e, student)}>{student.authHumanName}</span>
                 </Item>

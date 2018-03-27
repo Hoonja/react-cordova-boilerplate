@@ -10,8 +10,19 @@ import Push from './lib/Push';
 import {PLATFORM, getPlatformName} from './lib/utils';
 import { connect } from 'react-redux';
 
+import {socket as socketAction} from './redux/actions';
+
 const mapStateToProps = ({ security }) => ({
     parent : security
+});
+
+const mapDispatchProps = dispatch => ({
+    connect: () => {
+        return dispatch(socketAction.connect());
+    },
+    worker: (worker) => {
+        return dispatch(socketAction.initWorker(worker));
+    }
 });
 
 class App extends React.Component {
@@ -30,6 +41,7 @@ class App extends React.Component {
         if (this.platform !== PLATFORM.browser) {
             document.addEventListener('deviceready', this.onDeviceReady.bind(this), false);
         }
+
     }
 
     modifyActor() {
@@ -42,7 +54,7 @@ class App extends React.Component {
     }
 
     onDeviceReady() {
-        if(window.plugins.OneSignal) {
+        if(window.plugins && window.plugins.OneSignal) {
             Push.init(
                 (pushIds) => {
                     this.onPushIds(pushIds);
@@ -121,4 +133,4 @@ class App extends React.Component {
     }
 }
 
-export default connect(mapStateToProps, null)(App);
+export default connect(mapStateToProps, mapDispatchProps)(App);

@@ -11,25 +11,26 @@ const authToken = '*danbi*';
 let actorId, currentRtc, roomName;
 
 const makeRTC = (socket, params = null) => {
+    const connection = new SocketIOConnection(socket, { eventPrefix: 'rtc'});
+
+    console.log('makeRTC: ', params);
+
     return new SimpleWebRTC({
-        connection: new SocketIOConnection(socket, { eventPrefix: 'rtc'}),
+        connection,
         autoRequestMedia: true,
         // peerVolumeWhenSpeaking: 0.75, // 의미없음
         // adjustPeerVolume: true, // 문제가 더 심각해짐
         ...params,
         // https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints
         media: {
-            // video: true,
             video: {
                 facingMode: {ideal: 'user'},
                 width: {ideal: 280 },
                 height: {ideal: 210 }
             },
             audio: {
-                autoGainControl: {exact: false},
-                echoCancellation: {exact: true},
-                noiseSuppression: {exact: true},
-                latency: {ideal: 1.5}
+                ...values.mediaConfig.audio,
+                ...values.audioConfig.default,
             }
         },
     });
@@ -37,11 +38,13 @@ const makeRTC = (socket, params = null) => {
 
 const eventsWithDispatch = (rtc, emit, dispatch, isReconnect) => {
     rtc.on('localStream', (stream) => {
+        console.log('[eventsWithDispatch]: localStream');
         // Notice: 화상 교육 화면에서 처음 message 호출하면 오류 발생 antd 2.13.4 기준)
         Toast.success('환영합니다.', 1);
         dispatch(creator.localStream(stream));
     });
     rtc.on('readyToCall', () => {
+        console.log('[eventsWithDispatch]: readyToCall');
         emit('usePlugin', {id: 'rtc'});
         // 재연결 관련 로직 추가
         if(isReconnect && roomName) {
@@ -50,11 +53,13 @@ const eventsWithDispatch = (rtc, emit, dispatch, isReconnect) => {
     });
 
     rtc.on('videoAdded', (video, peer) => {
+        console.log('[eventsWithDispatch]: videoAdded');
         dispatch(creator.appendRemote(video, peer));
         roomName = rtc.roomName;
     });
 
     rtc.on('videoRemoved', (video, peer) => {
+        console.log('[eventsWithDispatch]: videoRemoved');
         dispatch(creator.removeRemote(video, peer));
         roomName = undefined;
     });
@@ -62,6 +67,9 @@ const eventsWithDispatch = (rtc, emit, dispatch, isReconnect) => {
     window.addEventListener("message", message => {
         if(message.data.event === 'learnStart') {
             dispatch(creator.updateStepContentShare(message.data.payload));
+        }
+        if(message.data.event === 'sendEvent') {
+            dispatch(creator.updateExtContentShare(message.data));
         }
     });
 };
@@ -103,6 +111,7 @@ const destroy = (rtc) => {
 };
 
 export const socket = (socket) => {
+
     return (action, emit, dispatch) => {
         switch(action.type)	 {
             case type.SOCKET_DISCONNECT:
@@ -144,6 +153,9 @@ export const socket = (socket) => {
                 emit('message', {...action.payload.item});
                 dispatch(creator.didChangeCameraQuality(action.payload.quality));
                 break;
+            case type.RTC_AUDIO_CONFIG_CHANGE:
+                emit('message', {...action.payload.item});
+                break;
             case type.RTC_POINT_SEND:
                 emit('message', {...action.payload.item});
                 dispatch(creator.didSendPoint(action.payload.point));
@@ -160,6 +172,12 @@ export const socket = (socket) => {
                 emit('message', {...action.payload.item});
                 break;
             case type.RTC_SKETCHER_CHANGE:
+                emit('message', {...action.payload.item});
+                break;
+            case type.RTC_CONNECT:
+                emit('message', {...action.payload.item});
+                break;
+            case type.RTC_DISCONNECT:
                 emit('message', {...action.payload.item});
                 break;
             default:

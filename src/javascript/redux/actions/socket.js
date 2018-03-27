@@ -1,5 +1,4 @@
 // import message from 'antd/lib/message';
-import ReactGA from 'react-ga';
 import { Toast } from 'antd-mobile';
 
 import {values, service} from '../../commons/configs';
@@ -7,16 +6,6 @@ import {socket as creator} from '../creators';
 
 let intervalId;
 let sketchBuffer;
-
-const setGa = (label, action = '', value = null) => {
-    ReactGA.event({
-        category: 'Redux-Socket',
-        label,
-        action: label
-        // action: '' + action + (typeof value === "object") ? JSON.stringify(value) : value,
-        // value: (typeof value === "object") ? JSON.stringify(value) : value
-    });
-};
 
 const sendSketcherData = (dispatch, student) => {
     const message = {
@@ -41,34 +30,31 @@ const isLowCanvasType = (getState) => {
     return socket.canvas.workspace.low;
 };
 
-const getUser = (security, student) => {
-    const classroom = service.getValue(student, 'sdata.classroomDetails', [])
-        .find(item => item.sdata_TeacherDetail.id === security.actorId);
-
-    const subjectTagName = service.getValue(classroom, 'subjectTagName', '한글・수학・영어');
-
+const getUser = (security) => {
     return {
-        actorId: security.actorId || 755,
-        humanName : security.humanName || '단비티쳐',
-        subjectTagName: subjectTagName === '한글・수학・영어' ? '체험 수업' : subjectTagName
+        actorId: security.actor.id || 7291,
+        humanName : security.humanName || '정두훈'
     };
 };
 
-const getUrl = (url, urlType, query, cmd = values.cmd.PLAY) => {
-    let newUrl = url;
-    if(urlType === values.media.WINK) {
-        newUrl = `${url}?tab_no=${query.tabNo || 1}&step_no=${query.stepNo || 1}&sub_no=${query.subNo || 1}`;
-    }
-    const obj = {Url: newUrl, type: urlType};
-
-    if(urlType === values.media.VIDEO) {
-        obj.cmd = cmd;
+const getUrl = (url, type, query, cmd = values.cmd.PLAY, ext) => {
+    if(type === values.media.WINK && cmd === values.cmd.CARD) {
+        return {Url: url, type, cmd, ext};
     }
 
-    return obj
+    if(type === values.media.WINK) {
+        const newUrl = `${url}?tab_no=${query.tabNo || 1}&step_no=${query.stepNo || 1}&sub_no=${query.subNo || 1}`;
+        return {Url: newUrl, type};
+    }
+
+    if(type === values.media.VIDEO) {
+        return {Url: url, type, cmd};
+    }
+
+    return {Url: url, type};
 };
 const getBaseMessage = (user, student) => {
-    const roomId = `${user.actorId}_${student}`;
+    const roomId = user.actorId === 12126 ? '7291_7293' : `${user.actorId}_${student.id}`;
     return {fromName: user.humanName, fromActorId: user.actorId, roomId};
 };
 
@@ -95,14 +81,18 @@ const connectLesson = (dispatch, socket, user, student, useRelay) => {
     const baseMessage = getBaseMessage(user, student);
     return joinRoom(socket.rtc, baseMessage.roomId)
         .then(() => {
+            const audioConfig = socket.localResource.audioConfig;
             const message = {
                 type: values.type.CALL, subtype: values.subtype.CONNECT,
-                classInfo: {name: '', subjects: [user.subjectTagName], profileImg: ''},
+                classInfo: {
+                    name: '', subjects: [user.subjectTagName], profileImg: '',
+                    useRelay : useRelay ? true : false,
+                    echoCancellation: audioConfig.echoCancellation.exact,
+                    noiseSuppression: audioConfig.noiseSuppression.exact
+                },
                 ...baseMessage
             };
-            if(useRelay) {
-                message.classInfo.useRelay = true;
-            }
+
             const params = {to : student, message: JSON.stringify(message)};
             dispatch(creator.lessonConnect(params));
         })
@@ -112,7 +102,10 @@ const connectLesson = (dispatch, socket, user, student, useRelay) => {
 };
 
 const leaveRoom = (rtc) => {
-    rtc.leaveRoom();
+    if(rtc) {
+        rtc.stopLocalVideo();
+        rtc.leaveRoom();
+    }
 };
 const joinRoom = (rtc, id) => {
     return new Promise((resolve, reject) => {
@@ -126,12 +119,11 @@ const joinRoom = (rtc, id) => {
     });
 };
 
-const getCameraInfo = (camera, quality) => {
+const getCameraInfo = (camera, quality, audioConfig) => {
     let width, height;
     if(values.camera.FACE === camera) {
         width = 487;
         height= 650;
-        return {name: camera, width, height};
     } else {
         switch (quality) {
             case values.quality.BEST:
@@ -154,13 +146,16 @@ const getCameraInfo = (camera, quality) => {
                 width = 1280;
                 height= 720;
         }
-        return {name: camera, width, height}
+    }
+    return {
+        name: camera, width, height,
+        echoCancellation: audioConfig.echoCancellation.exact,
+        noiseSuppression: audioConfig.noiseSuppression.exact
     }
 };
 
 export const initWorker = (worker) => {
     return (dispatch, getState) => {
-        setGa('initWorker');
         dispatch(creator.initWorker(worker));
     }
 };
@@ -172,11 +167,10 @@ export const initTalk = (talks) => {
 
 };
 
-export const connect = () => {
+export const connect = (params = null) => {
     return (dispatch, getState) => {
         const actorId = getState().security.actorId || 755;
-        setGa('connect', actorId);
-        dispatch(creator.connect(actorId));
+        dispatch(creator.connect({actorId, ...params}));
     };
 };
 
@@ -212,7 +206,6 @@ export const emitTalk = (item) => {
             message: {room: item.room, data: {text: item.text}}
         };
 
-        // setGa('emitTalk', item.to, message);
         dispatch(creator.emitTalk(getMessage(item.to, message)));
     };
 };
@@ -232,7 +225,6 @@ export const updateLessonConnectStatus = (status, student, item, useRelay) => {
         const {security, socket} = getState();
         const user = getUser(security, item);
 
-        setGa('updateLessonConnectStatus', status, student);
         dispatch(creator.lessonConnectStatus(status));
 
         if(status === values.status.CONNECT && student) {
@@ -263,10 +255,9 @@ export const changeCamera = (camera, student) => {
 
         const message = {
             type: values.type.CUSTOM, subtype: values.subtype.CAMERA,
-            cameraInfo: getCameraInfo(camera, socket.quality),
+            cameraInfo: getCameraInfo(camera, socket.quality, socket.localResource.audioConfig),
             ...getBaseMessage(user, student)
         };
-        setGa('changeCamera', values.subtype.CAMERA, student);
         dispatch(creator.changeCamera(getMessage(student, message), camera));
     };
 };
@@ -281,12 +272,29 @@ export const changeCameraQuality = (quality, student) => {
 
         const message = {
             type: values.type.CUSTOM, subtype: values.subtype.CAMERA,
-            cameraInfo: getCameraInfo(socket.camera, quality),
+            cameraInfo: getCameraInfo(socket.camera, quality, socket.localResource.audioConfig),
             ...getBaseMessage(user, student)
         };
-        // setGa('changeCamera', values.subtype.CAMERA, student);
         dispatch(creator.changeCameraQuality(getMessage(student, message), quality));
     };
+};
+
+export const changeAudioConfig = (type, student) => {
+    return (dispatch, getState) => {
+        const {security, socket} = getState();
+        const user = getUser(security);
+
+        // 화상 연결 전에도 변경 가능하도록.
+        dispatch(creator.willChangeAudioConfig(type));
+
+        const message = {
+            type: values.type.CUSTOM, subtype: values.subtype.CAMERA,
+            cameraInfo: getCameraInfo(socket.camera, socket, type),
+            ...getBaseMessage(user, student)
+        };
+        dispatch(creator.changeAudioConfig(getMessage(student, message)));
+
+    }
 };
 
 export const sendPoint = (point, student) => {
@@ -302,7 +310,6 @@ export const sendPoint = (point, student) => {
             point,
             ...getBaseMessage(user, student)
         };
-        setGa('sendPoint', values.subtype.POINT, point);
         dispatch(creator.sendPoint(getMessage(student, message), point));
     };
 };
@@ -312,21 +319,19 @@ export const changeRecord = (cmd) => {
         if(!isValidateConnection(getState)) {
             return;
         }
-        setGa('changeRecord', cmd);
         dispatch(creator.changeRecord(cmd));
     };
 };
 
-export const startContentShare = (student, url, urlType, tabNo = 1, cmd) => {
+export const startContentShare = (student, url, urlType, tabNo = 1, cmd, ext) => {
     return (dispatch, getState) => {
         if(!isValidateConnection(getState)) {
             return;
         }
         const message = {
             type: values.type.CUSTOM, subtype: values.subtype.SHARE,
-            contentsInfo: {visible: true, ...getUrl(url, urlType, {tabNo}, cmd)}
+            contentsInfo: {visible: true, ...getUrl(url, urlType, {tabNo}, cmd, ext)}
         };
-        setGa('startContentShare', values.subtype.SHARE, {url, urlType, query:{tabNo}});
         dispatch(creator.startContentShare(getMessage(student, message), {url, urlType, query:{tabNo}}));
     };
 };
@@ -339,7 +344,6 @@ export const startReviewContentShare = (student, url, urlType, query, cmd) => {
             type: values.type.CUSTOM, subtype: values.subtype.SHARE,
             contentsInfo: {visible: true, ...getUrl(url, urlType, query, cmd)}
         };
-        setGa('startReviewContentShare', values.subtype.SHARE,  {url, urlType, query});
         dispatch(creator.startContentShare(getMessage(student, message), {url, urlType, query}));
     };
 };
@@ -353,14 +357,12 @@ export const finishContentShare = (student) => {
             type: values.type.CUSTOM, subtype: values.subtype.SHARE,
             contentsInfo: {visible: false}
         };
-        setGa('finishContentShare', values.subtype.SHARE);
         dispatch(creator.finishContentShare(getMessage(student, message)));
     };
 };
 
 export const changeWorkspace = (workspace) => {
     return (dispatch, getState) => {
-        setGa('changeWorkspace', 'workspace', workspace);
         dispatch(creator.changeWorkspace(workspace));
     }
 };
@@ -407,6 +409,55 @@ export const changeSketcherWithoutAck = (cmd, data) => {
                 chalkboardInfo: {cmd, data}
             };
             socket.rtc.sendCustomMessage(JSON.stringify(message));
+        }
+    }
+};
+
+const connectVideoCall = (dispatch, socket, user, student, useRelay) => {
+    const baseMessage = getBaseMessage(user, student);
+    return joinRoom(socket.rtc, baseMessage.roomId)
+      .then(() => {
+          const message = {
+              type: values.type.CALL, subtype: values.subtype.CONNECT,
+              classInfo: {name: '', subjects: [user.subjectTagName], profileImg: ''},
+              ...baseMessage
+          };
+          if(useRelay) {
+              message.classInfo.useRelay = true;
+          }
+          const params = {to : student, message: JSON.stringify(message)};
+          dispatch(creator.rtcConnect(params));
+      })
+      .catch(err => {
+          console.log('실패', err);
+      });
+};
+const disconnectVideoCall = (dispatch, socket, user, student) => {
+    const message = {
+        type: values.type.CALL, subtype: values.subtype.DISCONNECT,
+        ...getBaseMessage(user, student)
+    };
+    const params = {to : student, message: JSON.stringify(message)};
+
+    dispatch(creator.rtcDisconnect(params));
+
+    leaveRoom(socket.rtc);
+};
+export const updateVideoCallConnectStatus = (status, student, useRelay) => {
+    return (dispatch, getState) => {
+        const {security, socket} = getState();
+        const user = getUser(security);
+
+        dispatch(creator.rtcConnectStatus(status));
+
+        if(status === values.status.CONNECT && student) {
+            // NOTICE: 불안정 접속 방지 위함
+            // disconnectVideoCall(dispatch, socket, user, student);
+            connectVideoCall(dispatch, socket, user, student, useRelay);
+        } else if(status === values.status.DISCONNECT && student) {
+            disconnectVideoCall(dispatch, socket, user, student);
+        } else if(status === values.status.CLOSE) {
+            console.log('close lesson room');
         }
     }
 };

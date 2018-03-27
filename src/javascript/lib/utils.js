@@ -6,7 +6,6 @@ export const PLATFORM = {
 
 export function getPlatformName() {
     const uagentLow = navigator.userAgent.toLocaleLowerCase();
-    console.info('agent info: ' + uagentLow);
     if (~uagentLow.indexOf('iphone')) {
         return PLATFORM.ios;
     } else if (~uagentLow.indexOf('android') && ~uagentLow.indexOf('wv')) {
@@ -15,3 +14,13 @@ export function getPlatformName() {
         return PLATFORM.browser;
     }
 }
+
+export function isWebBrowser() {
+    const uagentLow = navigator.userAgent.toLocaleLowerCase();
+    if (~uagentLow.indexOf('iphone') || (~uagentLow.indexOf('android'))) {
+        return false;
+    } else {
+        return true;
+    }
+}
+

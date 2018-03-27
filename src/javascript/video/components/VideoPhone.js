@@ -1,18 +1,55 @@
 import React, { Component } from 'react';
+import {connect} from 'react-redux';
 import { bindHandlers, unbindHandlers, SocketIOConnection } from 'danbi-msgclient';
+import studentM from '../../../resource/student_m.png';
+import studentW from '../../../resource/student_w.png';
 import SimpleWebRTC from 'danbi-simplewebrtc';
 import {Menu, Videos } from './';
 import { MsgClient, MSG_TYPE, MSG_SUBTYPE } from '../../lib/MsgClient.js';
-import {service} from '../../commons/configs';
+import { isWebBrowser } from '../../lib/utils.js';
+import {service, values} from '../../commons/configs';
 import {CustomIcon} from '../../commons/components';
+import {socket as action} from '../../redux/actions';
+import Loader from 'react-loader';
 
-import {Flex, Button} from 'antd-mobile';
+import {Flex, Button, Icon} from 'antd-mobile';
+
+const mapStateToProps = ({ fetch, security, socket }) => {
+    const room = service.getValue(fetch, 'multipleList.room', {});
+    const student = service.getValue(room, 'sdata.studentDetail', {});
+    return {
+        parent: {...security.actor},
+        student,
+        room,
+        rtc: socket.rtc,
+        remote: socket.remote,
+        status: socket.status,
+        local: socket.local,
+        callState: socket.callState
+    }
+};
+const mapDispatchProps = dispatch => ({
+    // update: (url, params) => dispatch(fetchAction.simpleSilentUpdate(url, params)),
+    // multipleList: (list) => dispatch(fetchAction.multipleList(list)),
+    updateStatus: (status, student, useRelay) => dispatch(action.updateVideoCallConnectStatus(status, student, useRelay)),
+    // checked: (id) => dispatch(action.checked(id)),
+    // move: (location) => dispatch(push(location)),
+});
 
 class VideoPhone extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            status: 'connect',
+            audioOn: true,
+            pauseVideo: false,
+            loaded: true,
+            videoOn: true,
+            callState: 'calling'
+        };
         this.roomId = '7292_7293';
         this.rtc = null;
+
         // this.socket = null;
     }
     componentDidMount() {
@@ -23,14 +60,57 @@ class VideoPhone extends Component {
         }
     }
 
-    componentWillUnmount() {
-        if (this.rtc) {
-            unbindHandlers(this.rtc, this.rtcHandlers);
-            this.rtcHandlers = null;
-
-            this.rtc.dispose();
-            this.rtc = null;
+    componentDidUpdate(prevProps) {
+        const {remote, status, local, callState} = this.props;
+        const keys = Object.keys(remote);
+        if(values.status.CONNECT === status && keys.length > 0 && (!prevProps.remote[keys[0]])) {
+            this.appendRemoteVideo(remote[keys[0]]);
         }
+        if(values.status.CONNECT === status && local && keys.length === 0) {
+            if(callState === 'remoteRemove') {
+                this.disconnect();
+            } else {
+                this.onLocalStream(local);
+            }
+        }
+    }
+
+    appendRemoteVideo({video, peer}) {
+        var vids = document.getElementById('divVidPeer');
+
+        video.height = '100%';
+        video.poster = 'https://s.wink.co.kr/images/parent/video_poster_parent_student.png';
+        video.style.backgroundColor = 'black';
+
+        vids.appendChild(video);
+
+        var vidSelf = document.getElementById('vidSelf');
+        vidSelf.style.zIndex = 100;
+        setTimeout(() => {
+            vidSelf.className = 'my-video';
+        }, 100);
+    }
+
+    onLocalStream(stream) {
+        setTimeout(() => {
+            var vidSelf = document.getElementById('vidSelf');
+            vidSelf.className = "video-loaded";
+            if (vidSelf && vidSelf.paused) {
+                console.log('vidSelf.play()');
+                vidSelf.volume = 0;
+                vidSelf.play();
+            }
+            vidSelf.volume = 0;
+        }, 0);
+    }
+    componentWillUnmount() {
+        // if (this.props.rtc) {
+        //     unbindHandlers(this.rtc, this.rtcHandlers);
+        //     this.rtcHandlers = null;
+        //
+        //     this.rtc.dispose();
+        //     this.rtc = null;
+        // }
     }
 
     onDeviceReady = () => {
@@ -55,15 +135,6 @@ class VideoPhone extends Component {
         console.log('[VideoPhone] onMsgMessage', data);
     }
 
-    isWebBrowser() {
-        const uagentLow = navigator.userAgent.toLocaleLowerCase();
-        if (~uagentLow.indexOf('iphone') || (~uagentLow.indexOf('android') && ~uagentLow.indexOf('wv'))) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
     onMsgLogin(err) {
         if (err) {
             console.error('[VideoPhone]' + err);
@@ -71,7 +142,7 @@ class VideoPhone extends Component {
         }
         console.log(`[VideoPhone] login successed (actorId:${this.actorId}, actorName:${this.actorName})`);
 
-        if (this.isWebBrowser()) {
+        if (isWebBrowser()) {
             this.rtc = new SimpleWebRTC({
                 connection: new SocketIOConnection(this.socket.getConnection(), { eventPrefix: 'rtc' }),
                 localVideoEl: 'vidSelf',
@@ -111,7 +182,7 @@ class VideoPhone extends Component {
 
     }
     connectRoom() {
-        if (this.isWebBrowser()) {
+        if (isWebBrowser()) {
             this.rtc = new SimpleWebRTC({
                 connection: new SocketIOConnection(this.socket.getConnection(), { eventPrefix: 'rtc' }),
                 localVideoEl: 'vidSelf',
@@ -155,12 +226,25 @@ class VideoPhone extends Component {
         console.log('[VideoPhone] onRtcLocalStream');
         if (window.cordova && window.cordova.plugins && window.cordova.plugins.iosrtc) {
             window.cordova.plugins.iosrtc.refreshVideos();
+        } else {
+            setTimeout(() => {
+                var vidSelf = document.getElementById('vidSelf');
+                vidSelf.className = "video-loaded";
+                console.log('vidSelf.paused', vidSelf.paused);
+                if (vidSelf && vidSelf.paused) {
+                    console.log('vidSelf.play()');
+                    vidSelf.volume = 0;
+                    vidSelf.play();
+                }
+                vidSelf.volume = 0;
+            }, 0);
         }
     }
 
     onRtcReadyToCall(session) {
         console.log('[VideoPhone] onRtcReadyToCall', this.roomId);
-        this.rtc.joinRoom(this.roomId, (err, description) => {
+        const {rtc} = this.props;
+        rtc.joinRoom(this.roomId, (err, description) => {
             if (err) {
                 console.error('[VideoPhone] 입장 실패: ' + err);
             } else {
@@ -195,7 +279,7 @@ class VideoPhone extends Component {
         var vids = document.getElementById('divVidPeer');
 
         vids.removeChild(video);
-        this.disconnect();
+        // this.disconnect();
     }
 
     prepareWebRTC = () => {
@@ -206,74 +290,178 @@ class VideoPhone extends Component {
     }
 
     connect() {
-        const {parent, room} = this.props.data;
+        const {parent, room, student} = this.props.data;
         const serverUrl = service.getUrl();
-        // if(parent.id === 12126) {
-        //     parent.id = 7293;
-        //     parent.authHumanName = "학생";
-        //     room.name = "7291_7293";
-        // }
+        if(parent.id === 12126) {
+            parent.id = 7293;
+            parent.authHumanName = "학생";
+            room.name = "7291_7293";
+        }
 
         console.log('[VideoPhone] connect', serverUrl, room.name, parent.id, parent.authHumanName);
         this.serverUrl = serverUrl;
         this.roomId = room.name;
         this.actorId = parent.id;
         this.actorName = parent.authHumanName;
+        this.facingMode = true;
 
-        this.socket = new MsgClient(this.serverUrl);
+        setTimeout(() => {
+            this.props.updateStatus(values.status.CONNECT, student, false );
+        }, 300);
+
+        // this.socket = new MsgClient(this.serverUrl);
         // this.msgHandlers = bindHandlers(this.socket, this, 'onMsg');
         // this.connectRoom();
     }
 
     disconnect() {
         console.log('[VideoPhone] disconnect', this.actorId, this.roomId);
-        if (this.rtc) {
-            console.log('leaveRoom', this.rtc);
-            this.rtc.leaveRoom();
-            this.rtc.stopLocalVideo();
+        const {student} = this.props;
+        this.props.updateStatus(values.status.DISCONNECT, student, false );
+        // if (this.rtc) {
+        //     console.log('leaveRoom', this.rtc);
+        //     this.rtc.leaveRoom();
+        //     this.rtc.stopLocalVideo();
+        // }
+        if(this.socket) {
+            this.socket.quitVConf(this.actorId, this.roomId);
         }
-        this.socket.quitVConf(this.actorId, this.roomId);
         // this.socket.logout();
         this.props.onClose();
     }
 
+    toggleAudio = (e) => {
+        console.log('[VideoPhone] toggleAudio');
+        e.preventDefault();
+        if (this.props.rtc) {
+            if (this.state.audioOn) {
+                this.props.rtc.mute();
+            } else {
+                this.props.rtc.unmute();
+            }
+            this.setState({
+                ...this.state,
+                audioOn: !this.state.audioOn
+            });
+        }
+    }
+
+    toggleVideo = (e) => {
+        console.log('[VideoPhone] toggleVideo');
+        e.preventDefault();
+        if (this.props.rtc) {
+            if (this.state.videoOn) {
+                this.props.rtc.pauseVideo();
+            } else {
+                this.props.rtc.resumeVideo();
+            }
+            this.setState({
+                ...this.state,
+                videoOn: !this.state.videoOn
+            });
+        }
+    }
+
+    changeCamera = (e) => {
+        e.preventDefault();
+        console.log('[VideoPhone] changeCamera');
+        this.facingMode = !this.facingMode;
+        return this.props.rtc.changeLocalVideo({
+            video: { facingMode: { exact: this.facingMode ? 'user' : 'environment' } },
+            audio: true
+        });
+    }
+
+    renderCallStatus() {
+        const {status} = this.state;
+        if(status === 'connecting') {
+            return '연결 중입니다.'
+        } else {
+            return '0:07';
+        }
+    }
+
+    renderCameraSwitchButton() {
+        return (
+            <div className="videophone-camera-switch">
+                <img src="https://s.wink.co.kr/app/parents/images/parents/btn_camera_change.png" alt="" onClick={e => this.changeCamera(e)}/>
+            </div>
+        )
+    }
+
+    renderSpinner() {
+        return (
+            <div className="videophone-spinner">
+                <Loader lines={12} length={12} width={8} radius={30}
+                        color="#fff" className="spinner" zIndex={2e9} top="50%" left="50%" scale={1.00}
+                        loadedClassName="loadedContent" >
+                </Loader>
+                <CustomIcon roots="FontAwesome" type="FaVideoCamera" className="loader-icon" sizes="lg"/>
+            </div>
+        )
+    }
+
+    isConnected() {
+        const {remote} = this.props;
+        return (Object.keys(remote).length > 0);
+    }
+
     render() {
         const {student} = this.props.data;
+        const {status, audioOn, videoOn, pauseVideo, loaded, callState} = this.state;
+
         return (
             <div>
-                <Flex className="videophone-area" style={{backgroundColor: 'black', height: '90vh'}}>
-                    <video id="vidSelf" autoPlay style={{ backgroundColor: '#000000', transition: 'width 0.7s, height 0.7s, top 0.7s, left 0.7s', width: '100%'}} poster="https://s.wink.co.kr/images/parent/video_poster_parent_parent.png"></video>
+                <Flex className="videophone-area">
+                    <video id="vidSelf" class="video-loading" autoPlay style={{ backgroundColor: '#000000', transition: 'width 0.7s, height 0.7s, top 0.7s, left 0.7s'}} poster="https://s.wink.co.kr/images/parent/video_poster_parent_parent.png"></video>
                     <div id="divVidPeer"></div>
                 </Flex>
-                <div className="student-division">
-                    <Flex>
-                        <Flex.Item>
-                            images
+                <div className="videophone-student-division">
+                    <Flex direction="column">
+                        {status === 'connecting' && (
+                            <Flex.Item>
+                                <img src={student.isMail ? studentM : studentW} alt="student" className="student-img"/>
+                            </Flex.Item>
+                        )}
+                        <Flex.Item className="student-name">
+                            {student.authHumanName || '정주어'}
                         </Flex.Item>
-                        <Flex.Item>
-                            {student.authHumanName}
-                        </Flex.Item>
-                        <Flex.Item>
-                            ing...
+                        <Flex.Item className="call-status">
+                            {this.renderCallStatus()}
                         </Flex.Item>
                     </Flex>
                 </div>
-                <div className="button-division">
-                    <Flex className="button-out">
-                        <Flex.Item>
-                            <Button type="primary" size="small" onClick={e => this.connectRoom(e)}>접속</Button>
-                        </Flex.Item>
-                        <Flex.Item>
-                            <CustomIcon type="MdVisibilityOff" style={{color: '#fff'}} />
-                        </Flex.Item>
-                    </Flex>
-                    <Flex className="button-ing">
-                        <Flex.Item>
-                            <CustomIcon type="MdVolumeOff" style={{color: '#fff'}} />
-                        </Flex.Item>
-                        <Flex.Item>
-                            <Button type="primary" size="small" onClick={e => this.disconnect(e)}>종료</Button>
-                        </Flex.Item>
+                {false && this.renderCameraSwitchButton()}
+                {!loaded && this.renderSpinner()}
+                <div className="videophone-button-division">
+                    <Flex className="button-list" justify="center">
+                        {this.isConnected() &&
+                        <Flex.Item className="videophone-icon">
+                            <CustomIcon type={audioOn ? "MdMicOff" : "MdMic"} onClick={e => this.toggleAudio(e)}/>
+                        </Flex.Item>}
+
+                        {(this.isConnected() || callState === 'wait') &&
+                        <Flex.Item className="videophone-button">
+                            <Button type="warning" size="large" onClick={e => this.disconnect(e)}>
+                                <CustomIcon type="MdCallEnd"/>
+                                종료</Button>
+                        </Flex.Item>}
+                        {(!this.isConnected() && callState === 'calling') &&
+                        <Flex.Item className="videophone-button">
+                            <Button type="warning" size="large" onClick={e => this.disconnect(e)}>
+                                <CustomIcon type="MdDoNotDisturb"/>
+                                거절</Button>
+                        </Flex.Item>}
+                        {(!this.isConnected() && callState === 'calling') &&
+                        <Flex.Item className="videophone-button">
+                            <Button type="primary" size="large" onClick={e => this.connectRoom(e)}>
+                                <CustomIcon type="MdPhone"/>
+                                통화</Button>
+                        </Flex.Item>}
+                        {this.isConnected() &&
+                        <Flex.Item className="videophone-icon">
+                            <CustomIcon type={videoOn ? "MdVideocamOff" : "MdVideocam"} onClick={e => this.toggleVideo(e)}/>
+                        </Flex.Item>}
                     </Flex>
                 </div>
             </div>
@@ -281,4 +469,4 @@ class VideoPhone extends Component {
     }
 }
 
-export default VideoPhone;
+export default connect(mapStateToProps, mapDispatchProps)(VideoPhone);

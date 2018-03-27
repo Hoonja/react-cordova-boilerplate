@@ -5,7 +5,7 @@ import { push } from 'react-router-redux';
 import { createForm } from 'rc-form';
 import { APICaller } from 'wink_mobile_commons/dist/api';
 
-import { Flex, InputItem, Button, Tabs, Checkbox, List, WingBlank, Modal } from 'antd-mobile'
+import { Flex, InputItem, Button, Tabs, Checkbox, List, WhiteSpace, Modal } from 'antd-mobile'
 
 import {security as action} from '../redux/actions';
 import { api, service, values } from '../commons/configs';
@@ -146,6 +146,7 @@ class Login extends React.Component {
                     <Flex.Item className="login-input-wrapper">
                         <Tabs tabs={values.tabs} initialPage={0} animated={false} useOnPan={false}>
                             <div className="tab-div">
+                                <WhiteSpace size="lg" />
                                 <List className="login-input-list">
                                     <InputItem
                                         {...getFieldProps('username', {
