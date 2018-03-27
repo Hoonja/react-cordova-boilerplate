@@ -1,0 +1,106 @@
+.videophone-area {
+    background-color: #000000;
+}
+
+.videophone-student-division {
+    position: absolute;
+    top: 40px;
+    width: 100%;
+
+    .student-img {
+        border-radius: 50%;
+        width: 60px;
+    }
+
+    .student-name {
+        font-size: 30px;
+        font-weight: bold;
+        color: #FFFFFF;
+        margin-left: 0px !important;
+        margin-top: 5px;
+    }
+
+    .call-status {
+        margin-top: 10px;
+        font-size: 18px;
+        color: #FFFFFF;
+        margin-left: 0px !important;
+    }
+}
+
+.videophone-camera-switch {
+    position: absolute;
+    top: 50px;
+    right: 10px;
+    width:50px;
+    height: 50px;
+    color: #FFFFFF;
+}
+
+.videophone-spinner {
+    .loader-icon {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #FFFFFF;
+    }
+}
+.videophone-button-division {
+    position: absolute;
+    bottom: 40px;
+    width: 100%;
+    .am-flexbox-item {
+        margin-left: 0px !important;
+    }
+    .videophone-icon {
+        max-width: 90px !important;
+        text-align: center;
+        .am-icon-md {
+            padding: 14px 13px;
+            background-color: white;
+            border-radius: 50%;
+            color: #939595;
+        }
+    }
+    .videophone-button {
+        max-width: 140px !important;
+        padding: 0 5px;
+
+        .am-button {
+            -webkit-border-radius: 40px;
+            -moz-border-radius: 40px;
+            border-radius: 40px;
+            border: none;
+            .am-icon {
+                padding-right: 10px;
+            }
+            &::before{
+                height: 0px !important;
+                border: none;
+            }
+        }
+    }
+}
+
+.my-video{
+    position: absolute;
+    top: 50px;
+    left: 20px;
+    height: 20% !important;
+    width: 20%;
+}
+
+#divVidPeer {
+    video {
+        width: 100vw;
+        height: 100vh;
+    }
+}
+
+.video-loading {
+    width: 100%;
+}
+.video-loaded {
+    height: 100vh;
+}
