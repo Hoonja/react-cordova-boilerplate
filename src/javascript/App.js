@@ -48,7 +48,12 @@ class App extends React.Component {
         const pushIdsIos = JSON.parse(window.localStorage.getItem(values.storageKey.PUSH_IDS_IOS));
         if(pushIdsIos) {
             const {parent} = this.props;
-            const obj = api.modifyActor(service.getValue(parent, 'actor.id'), pushIdsIos);
+            const params = {
+                data: {
+                    pushIdsIos
+                }
+            };
+            const obj = api.modifyActor(service.getValue(parent, 'actor.id'), params);
             return APICaller.post(obj.url, obj.params);
         }
     }

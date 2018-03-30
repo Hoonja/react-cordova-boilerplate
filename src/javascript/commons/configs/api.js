@@ -45,6 +45,31 @@ export const api = {
             ...params
         }
     }),
+    sendTalk : (params = null) => ({
+        url: `/aux/talks/`,
+        params: {
+            ...params
+        }
+    }),
+    modifyTalk : (id, params = null) => ({
+        url: `/aux/talks/${id}/modify/`,
+        params: {
+            ...params
+        }
+    }),
+    setTalk : (id, params = null) => ({
+        url: `/aux/talks/${id}/set_status/`,
+        params: {
+            ...params
+        }
+    }),
+    sendPushMessage: (params = null) => ({
+        url: `/account/actors/send_mobile_push/`,
+        params: {
+            ...params
+        }
+    })
+
 };
 
 

@@ -35,4 +35,6 @@
         </config-file>
     </platform>
     <plugin name="cordova-plugin-iosrtc" spec="~4.0.2" />
+    <plugin name="onesignal-cordova-plugin" spec="~2.3.3" />
+    <plugin name="cordova-plugin-vibration" spec="~3.0.1" />
 </widget>

@@ -54,7 +54,7 @@ const getUrl = (url, type, query, cmd = values.cmd.PLAY, ext) => {
     return {Url: url, type};
 };
 const getBaseMessage = (user, student) => {
-    const roomId = user.actorId === 12126 ? '7291_7293' : `${user.actorId}_${student.id}`;
+    const roomId = user.actorId === 12126 ? '7291_7293' : `${user.actorId}_${student && student.id}`;
     return {fromName: user.humanName, fromActorId: user.actorId, roomId};
 };
 
@@ -105,6 +105,7 @@ const leaveRoom = (rtc) => {
     if(rtc) {
         rtc.stopLocalVideo();
         rtc.leaveRoom();
+        rtc.dispose();
     }
 };
 const joinRoom = (rtc, id) => {
@@ -461,3 +462,9 @@ export const updateVideoCallConnectStatus = (status, student, useRelay) => {
         }
     }
 };
+
+export const updateVideoCallState = (callState) => {
+    return (dispatch, getState) => {
+        dispatch(creator.rtcVideoCallState(callState));
+    }
+}

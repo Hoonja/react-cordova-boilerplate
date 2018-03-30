@@ -18,6 +18,20 @@ export const modal = {
     // style:{ top: 20 }
 };
 
+export const callState = {
+    REQUEST: 'request',
+    RECEIVED: 'received',
+    REMOTE_APPEND: 'remoteAppend',
+    REMOTE_REMOVE: 'remoteRemove',
+    CALL_WAIT: 'wait',
+    CALLING: 'calling',
+    CALL_END: 'called',
+    CALL_CANCEL: 'cancel',
+    CALL_FAIL: 'fail',
+    CALL_REJECT: 'reject',
+    MODE_ACTIVE: 'active',
+};
+
 export const status = {
     CONNECT: 'connect',
     DISCONNECT: 'disconnect',
@@ -171,10 +185,36 @@ const reg = {
     mdn: /^(01[016789]{1}|02|0[3-9]{1}[0-9]{1})-?[0-9]{3,4}-?[0-9]{4}$/
 };
 
+export const talkType = {
+    TextTalk:1,
+    VoiceTalk:2,
+    VideoTalk:3,
+    TabletOnlyResponseTalk:4,
+    TabletOnlyRequestTalk:5,
+    AbsenceTalk:6,
+    ComplimentTalk:7,
+    ImageTalk:8,
+
+    ScheduleAlarmTalk:9,
+    LearningAlarmTalk:10,
+    DeliveryAlarmTalk:11,
+
+    SystemAlarmTalk: 99,
+    RealtimeVoiceTalk: 102,
+    RealtimeVideoTalk: 103
+
+}
+
+export const realTimeTalkType = {
+    complete:'complete',
+    fail:'fail',
+}
+
 export default {
     format,
     modal,
     status,
+    callState,
     type,
     subtype,
     cmd,
@@ -193,5 +233,7 @@ export default {
     storageKey,
     actorType,
     tabs,
-    reg
+    reg,
+    talkType,
+    realTimeTalkType
 };

@@ -370,3 +370,13 @@ export const rtcDisconnect = (item) => {
         }
     }
 };
+
+export const rtcVideoCallState = (callState, item) => {
+    return {
+        type: type.RTC_VIDEO_CALL_STATE,
+        payload: {
+            callState,
+            item
+        }
+    }
+};

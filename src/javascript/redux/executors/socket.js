@@ -13,8 +13,6 @@ let actorId, currentRtc, roomName;
 const makeRTC = (socket, params = null) => {
     const connection = new SocketIOConnection(socket, { eventPrefix: 'rtc'});
 
-    console.log('makeRTC: ', params);
-
     return new SimpleWebRTC({
         connection,
         autoRequestMedia: true,
@@ -40,7 +38,6 @@ const eventsWithDispatch = (rtc, emit, dispatch, isReconnect) => {
     rtc.on('localStream', (stream) => {
         console.log('[eventsWithDispatch]: localStream');
         // Notice: 화상 교육 화면에서 처음 message 호출하면 오류 발생 antd 2.13.4 기준)
-        Toast.success('환영합니다.', 1);
         dispatch(creator.localStream(stream));
     });
     rtc.on('readyToCall', () => {
@@ -115,8 +112,8 @@ export const socket = (socket) => {
     return (action, emit, dispatch) => {
         switch(action.type)	 {
             case type.SOCKET_DISCONNECT:
-                Toast.fail('화상 연결이 비정상적으로 종료되었습니다.');
-                Toast.info('재연결을 시도합니다.', 10);
+                // Toast.fail('화상 연결이 비정상적으로 종료되었습니다.');
+                // Toast.info('재연결을 시도합니다.', 10);
 
                 destroy(currentRtc);
 
@@ -125,8 +122,9 @@ export const socket = (socket) => {
             case type.SOCKET_RECONNECT:
                 // msg-server를 재기동하더라도 일반적인 connection은 물려 있으나,
                 // 판서 그림은 공유 되지 않음
-                Toast.success('재연결중입니다.');
-                currentRtc = initialize(socket, emit, dispatch, true);
+                // Toast.success('재연결중입니다.');
+
+                // currentRtc = initialize(socket, emit, dispatch, true);
                 break;
             case type.SOCKET_CONNECT:
                 // 중요: 삭제불가

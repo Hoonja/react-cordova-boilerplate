@@ -6,12 +6,17 @@ REST API Key: MmU5YmIzMjQtY2VlNi00NGE4LTlhN2MtZWE3ZjY4ZWE4MmFk
 학부모앱 키
 App ID: 86ece6f2-2a0a-44f1-bb5e-8768d8c0831a
 REST API Key: MmZiMzNjMDYtZWU3My00NTliLWE5NmMtNDk1YmQ2ODIyZDNk
+
+학부모 화상통화앱 키
+App ID: 31911331-9227-4f27-a894-344305bc4dfc
+REST API Key: ODIzZWU4YjYtMTM2Ni00MzIxLTkwYmMtMTk3NjIxN2Y4M2Ni
+
 */
 
 import {api} from '../commons/configs';
 import {APICaller} from 'wink_mobile_commons/dist/api';
 
-const appID = '86ece6f2-2a0a-44f1-bb5e-8768d8c0831a';
+const appID = '31911331-9227-4f27-a894-344305bc4dfc';
 
 export default class Push {
     static init(idsCallback, notifyCallback) {
