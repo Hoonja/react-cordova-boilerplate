@@ -59,6 +59,7 @@ class VideoPhone extends Component {
         if(values.status.CONNECT === status && keys.length > 0 && (!prevProps.remote[keys[0]])) {
             this.appendRemoteVideo(remote[keys[0]]);
         }
+        console.log('did update: ', local, callState);
         if(local && keys.length === 0) {
             if(callState === 'remoteRemove') {
                 this.disconnect(values.callState.CALL_END);
@@ -66,6 +67,7 @@ class VideoPhone extends Component {
                 this.onLocalStream(local);
             }
         }
+        // this.onLocalStream(local);
     }
 
     appendRemoteVideo({video, peer}) {
@@ -362,7 +364,7 @@ class VideoPhone extends Component {
         return (
             <div>
                 <Flex className="videophone-area">
-                    <video id="vidSelf" class="video-loading" autoPlay style={{ backgroundColor: '#000000', transition: 'width 0.7s, height 0.7s, top 0.7s, left 0.7s'}} poster="https://s.wink.co.kr/images/parent/video_poster_parent_parent.png"></video>
+                    <video id="vidSelf" className="video-loading" autoPlay poster="https://s.wink.co.kr/images/parent/video_poster_parent_parent.png"></video>
                     <div id="divVidPeer"></div>
                 </Flex>
                 <div className="videophone-student-division">

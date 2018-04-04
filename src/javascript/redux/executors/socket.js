@@ -35,6 +35,7 @@ const makeRTC = (socket, params = null) => {
 };
 
 const eventsWithDispatch = (rtc, emit, dispatch, isReconnect) => {
+    console.log('eventsWithDispatch: ', rtc);
     rtc.on('localStream', (stream) => {
         console.log('[eventsWithDispatch]: localStream');
         // Notice: 화상 교육 화면에서 처음 message 호출하면 오류 발생 antd 2.13.4 기준)

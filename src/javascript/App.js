@@ -1,3 +1,5 @@
+/* global OneSignal */
+
 import React from 'react';
 
 import { StickyContainer } from 'react-sticky';
@@ -8,6 +10,7 @@ import { WrapperContainer } from './layout';
 
 import Push from './lib/Push';
 import {PLATFORM, getPlatformName} from './lib/utils';
+import {requestPermissions} from './lib/permissions';
 import { connect } from 'react-redux';
 
 import {socket as socketAction} from './redux/actions';
@@ -59,6 +62,8 @@ class App extends React.Component {
     }
 
     onDeviceReady() {
+        alert('onDeviceReady: ' + window.plugins.OneSignal);
+        console.log('onDeviceReady: ', window.plugins.OneSignal);
         if(window.plugins && window.plugins.OneSignal) {
             Push.init(
                 (pushIds) => {
@@ -69,10 +74,17 @@ class App extends React.Component {
                 }
             );
         }
+        navigator.getUserMedia  = navigator.getUserMedia ||
+          navigator.webkitGetUserMedia ||
+          navigator.mozGetUserMedia ||
+          navigator.msGetUserMedia;
+        requestPermissions();
     }
 
     // 푸시 아이디를 스토리지에 저장한다. (나중에 이용자가 로그인 할 때, 이것을 읽어서 actor 정보에 저장하도록 한다.)
     onPushIds = (ids) => {
+        alert('onPushIds: ' + ids);
+        console.log('onPushIds: ', ids);
         localStorage.setItem(values.storageKey.PUSH_IDS_IOS, JSON.stringify(ids));
         this.modifyActor();
     }

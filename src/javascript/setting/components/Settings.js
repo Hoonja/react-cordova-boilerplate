@@ -8,6 +8,8 @@ import { fetch, security as action } from '../../redux/actions';
 import { Flex, Button, List, Card, Switch, Modal } from 'antd-mobile';
 import {SecurityService, SessionService} from 'wink_mobile_commons/dist/security/services';
 
+import { getCurrentAppVersion } from '../../lib/utils';
+
 const Item = List.Item;
 
 const mapStateToProps = ({ fetch, security }) => {
@@ -90,7 +92,7 @@ class Settings extends React.Component {
     }
 
     onPushChange(push) {
-        console.log('onPushChange: ', push);
+        console.log('onPushChange: ', push, getCurrentAppVersion());
     }
 
     renderPushSetting() {

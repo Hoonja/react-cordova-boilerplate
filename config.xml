@@ -35,6 +35,14 @@
         </config-file>
     </platform>
     <plugin name="cordova-plugin-iosrtc" spec="~4.0.2" />
-    <plugin name="onesignal-cordova-plugin" spec="~2.3.3" />
     <plugin name="cordova-plugin-vibration" spec="~3.0.1" />
+    <plugin name="cordova-plugin-app-version" spec="~0.1.9" />
+    <plugin name="cordova-plugin-android-permissions" spec="~1.0.0" />
+    <plugin name="cordova-plugin-ios-camera-permissions" spec="~1.2.0">
+        <variable name="CAMERA_USAGE_DESCRIPTION" value="This app needs camera access" />
+        <variable name="MICROPHONE_USAGE_DESCRIPTION" value="This app needs microphone access" />
+        <variable name="PHOTOLIBRARY_ADD_USAGE_DESCRIPTION" value="This app needs write-access to photo library" />
+        <variable name="PHOTOLIBRARY_USAGE_DESCRIPTION" value="This app needs read/write-access photo library access" />
+    </plugin>
+    <plugin name="onesignal-cordova-plugin" spec="^2.3.3" />
 </widget>

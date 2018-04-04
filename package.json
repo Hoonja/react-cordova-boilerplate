@@ -13,12 +13,14 @@
     "dependencies": {
         "antd-mobile": "^2.1.6",
         "axios": "^0.16.2",
+        "cordova-ios": "^4.5.4",
         "danbi-msgclient": "^0.1.2",
         "danbi-simplewebrtc": "^0.1.2",
         "fetch-jsonp": "^1.1.1",
         "history": "^4.7.2",
         "localforage": "^1.6.0",
         "moment": "^2.20.1",
+        "onesignal-cordova-plugin": "^2.3.3",
         "postcss-pxtorem": "^4.0.1",
         "prop-types": "^15.5.8",
         "react": "^16.0.0",
@@ -167,5 +169,10 @@
         "hd": "1px",
         "brand-primary": "#00bbd4",
         "fill-body": "#ffffff"
+    },
+    "cordova": {
+        "plugins": {
+            "onesignal-cordova-plugin": {}
+        }
     }
 }
