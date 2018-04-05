@@ -35,4 +35,6 @@
         </config-file>
     </platform>
     <plugin name="cordova-plugin-iosrtc" spec="~4.0.2" />
+    <plugin name="cordova-plugin-device" spec="^2.0.1" />
+    <engine name="ios" spec="^4.5.4" />
 </widget>

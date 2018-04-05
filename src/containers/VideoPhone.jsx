@@ -44,14 +44,15 @@ class VideoPhone extends Component {
 
     console.log(`[VideoPhone] login successed (actorId:${this.actorId}, actorName:${this.actorName})`);
 
-    const myVidbox = document.querySelector('#vidbox-me');
+    // const myVidbox = document.querySelector('#vidbox-me');
     const vidSelf = document.createElement('VIDEO');
     vidSelf.autoplay = true;
     vidSelf.width = 180;
     vidSelf.height = 240;
     vidSelf.volume = 0;
     vidSelf.id = 'vidSelf';
-    myVidbox.appendChild(vidSelf);
+    // myVidbox.appendChild(vidSelf);
+    this.vidSelf = vidSelf;
 
     this.rtc = new SimpleWebRTC({
       connection: new SocketIOConnection(this.socket.getConnection(), { eventPrefix: 'rtc' }),
@@ -69,6 +70,7 @@ class VideoPhone extends Component {
         audio: true
       }
     });
+    this.rtc.webrtc.config.peerConnectionConfig.iceTransports = 'relay';
     // this.rtc.webrtc.config.peerConnectionConfig.iceTransports = 'relay';
 
     this.rtcHandlers = bindHandlers(this.rtc, this, 'onRtc');
@@ -77,6 +79,8 @@ class VideoPhone extends Component {
 
   onRtcLocalStream(stream) {
     console.log('[VideoPhone] onRtcLocalStream');
+    const myVidbox = document.querySelector('#vidbox-me');
+    myVidbox.appendChild(this.vidSelf);
     if (window.cordova && window.cordova.plugins && window.cordova.plugins.iosrtc) {
       window.cordova.plugins.iosrtc.refreshVideos();
     }
