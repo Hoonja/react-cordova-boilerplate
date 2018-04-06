@@ -97,9 +97,7 @@ class VideoPhone extends Component {
                 console.log('vidSelf.play()');
                 vidSelf.volume = 0;
                 vidSelf.play();
-                alert('before');
                 if (window.cordova && window.cordova.plugins && window.cordova.plugins.iosrtc) {
-                    alert('after');
                     window.cordova.plugins.iosrtc.refreshVideos();
                 }
             }

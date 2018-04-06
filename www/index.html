@@ -1,19 +1,4 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-  <meta charset="utf-8">
-  <title>윙크 학부모 아이폰</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <script src="vendors/adapter-latest.js"></script>
-  <!-- <script src="cordova.js"></script> -->
-</head>
-
-<body>
-<div id="root">
-</div>
-<script>
-    function init() {
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>윙크 학부모 아이폰</title><meta name="viewport" content="width=device-width,initial-scale=1"><script src="vendors/adapter-latest.js"></script><script src="cordova.js"></script></head><body><div id="root"></div><script>function init() {
         const uagentLow = navigator.userAgent.toLocaleLowerCase();
         console.info('agent info: ' + uagentLow);
 
@@ -21,9 +6,9 @@
             window.wink_cordova_env = 'staging';
             window.wink_cordova_dev_host = 'http://server.local.danbi';
 
-            var scriptTag = document.createElement('script');
-            scriptTag.setAttribute('src', 'cordova.js');
-            document.head.appendChild(scriptTag);
+            // var scriptTag = document.createElement('script');
+            // scriptTag.setAttribute('src', 'cordova.js');
+            // document.head.appendChild(scriptTag);
 
             document.addEventListener("deviceready", onDeviceReady, false);
             function onDeviceReady() {
@@ -59,8 +44,4 @@
             //  cordova serve로 실행하는 경우 코드 끝
         }
     }
-    init();
-</script>
-<!-- <script type="text/javascript" src="/static/js/main.js"></script><script type="text/javascript" src="main.js"></script></body> -->
-
-</html>
+    init();</script></body></html>

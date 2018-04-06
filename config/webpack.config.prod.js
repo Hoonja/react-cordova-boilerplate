@@ -139,7 +139,7 @@ module.exports = {
                         test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
                         loader: require.resolve('url-loader'),
                         options: {
-                            limit: 10000,
+                            limit: 100000,
                             name: 'static/resource/[name].[hash:8].[ext]',
                         },
                     },
@@ -175,38 +175,30 @@ module.exports = {
                     // tags. If you use code splitting, however, any async bundles will still
                     // use the "style" loader inside the async code so CSS from them won't be
                     // in the main CSS file.
-                    {
-                        // Exclude `js` files to keep "css" loader working as it injects
-                        // it's runtime that would otherwise processed through "file" loader.
-                        // Also exclude `html` and `json` extensions so they get processed
-                        // by webpacks internal loaders.
-                        exclude: [
-                            /\.html$/,
-                            /\.(js|jsx)$/,
-                            /\.css$/,
-                            /\.less$/,
-                            /\.json$/,
-                            /\.bmp$/,
-                            /\.gif$/,
-                            /\.jpe?g$/,
-                            /\.png$/,
-                        ],
-                        loader: require.resolve('file-loader'),
-                        options: {
-                            name: 'static/resource/[name].[hash:8].[ext]',
-                        },
-                    },
+                    // {
+                    //     // Exclude `js` files to keep "css" loader working as it injects
+                    //     // it's runtime that would otherwise processed through "file" loader.
+                    //     // Also exclude `html` and `json` extensions so they get processed
+                    //     // by webpacks internal loaders.
+                    //     exclude: [
+                    //         /\.html$/,
+                    //         /\.(js|jsx)$/,
+                    //         /\.css$/,
+                    //         /\.less$/,
+                    //         /\.json$/,
+                    //         /\.bmp$/,
+                    //         /\.gif$/,
+                    //         /\.jpe?g$/,
+                    //         /\.png$/,
+                    //     ],
+                    //     loader: require.resolve('file-loader'),
+                    //     options: {
+                    //         name: 'static/resource/[name].[hash:8].[ext]',
+                    //     },
+                    // },
                     // "url" loader works like "file" loader except that it embeds assets
                     // smaller than specified limit in bytes as data URLs to avoid requests.
                     // A missing `test` is equivalent to a match.
-                    {
-                        test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
-                        loader: require.resolve('url-loader'),
-                        options: {
-                            limit: 10000,
-                            name: 'static/resource/[name].[hash:8].[ext]',
-                        },
-                    },
                     // Parse less files and modify variables
                     {
                         test: /\.css$/,

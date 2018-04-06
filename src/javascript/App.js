@@ -81,7 +81,6 @@ class App extends React.Component {
 
     // 푸시 아이디를 스토리지에 저장한다. (나중에 이용자가 로그인 할 때, 이것을 읽어서 actor 정보에 저장하도록 한다.)
     onPushIds = (ids) => {
-        alert("token: " + ids.pushToken);
         localStorage.setItem(values.storageKey.PUSH_IDS_IOS, JSON.stringify({...ids, registDate: new Date()}));
         this.modifyActor();
     }
