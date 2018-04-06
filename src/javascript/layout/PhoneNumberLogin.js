@@ -11,7 +11,7 @@ import { fetch } from '../redux/actions';
 
 import { InputItem, Button, Checkbox, List, Flex, WhiteSpace } from 'antd-mobile';
 import {Toast} from "antd-mobile/lib/index";
-import {APICaller} from "wink_mobile_commons/dist/api/index";
+import {APICaller} from "../mobileCommons/api";
 import {api, service, values} from "../commons/configs";
 
 const AgreeItem = Checkbox.AgreeItem;

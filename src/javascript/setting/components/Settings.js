@@ -6,7 +6,7 @@ import {values} from '../../commons/configs';
 import { fetch, security as action } from '../../redux/actions';
 
 import { Flex, Button, List, Card, Switch, Modal } from 'antd-mobile';
-import {SecurityService, SessionService} from 'wink_mobile_commons/dist/security/services';
+import {SecurityService, SessionService} from '../../mobileCommons/security/services';
 
 import { getCurrentAppVersion } from '../../lib/utils';
 

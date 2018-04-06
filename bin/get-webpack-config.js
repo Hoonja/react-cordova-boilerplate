@@ -6,14 +6,7 @@ const nodeExternals = require('webpack-node-externals');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-const fs = require('fs');
-const appDirectory = fs.realpathSync(process.cwd());
-const resolveApp = relativePath => path.resolve(appDirectory, relativePath);
-
 const rootPath = path.join(__dirname, '..');
-
-const appSrc = resolveApp('src');
-const commonSrc = resolveApp('node_modules/wink_mobile_commons');
 
 let getServerString;
 
@@ -24,200 +17,194 @@ let getServerString;
  * @return {Object}                Webpack config object
  */
 const getWebpackConfig = (options = ({}), privateOptions = ({})) => {
-  const {
-    coveragePaths = [],
-    isProd = false,
-    isSsr = false,
-    isWebpackDevServer = false,
-    isTest = false,
-    isCoverage = false,
-    port,
-    bail = false,
-    globals = ({})
-  } = options;
+    const {
+        coveragePaths = [],
+        isProd = false,
+        isSsr = false,
+        isWebpackDevServer = false,
+        isTest = false,
+        isCoverage = false,
+        port,
+        bail = false,
+        globals = ({})
+    } = options;
 
-  const {
-    isClientBuild = true
-  } = privateOptions;
+    const {
+        isClientBuild = true
+    } = privateOptions;
 
-  return ({
-    bail,
-    target: isTest ? 'node' : undefined,
-    devtool: isTest ? 'inline-source-map' : (isProd ? false : 'source-map'),
-    entry: isTest ? undefined : {
-      [`app${isProd ? '.min' : ''}`]: (
-        isWebpackDevServer ? [`webpack-dev-server/client?http://localhost:${port}`, 'webpack/hot/dev-server'] : []
-      ).concat(path.join(rootPath, 'src', 'entry-points', isClientBuild ? 'client.jsx' : 'server.jsx'))
-    },
-    output: isTest ? undefined : {
-      path: path.join(rootPath, 'www'),
-      filename: '[name].js',
-      libraryTarget: isClientBuild ? undefined : 'umd'
-    },
-    plugins: [
-      new ExtractTextPlugin({
-        filename: '[name].css',
-        disable: isWebpackDevServer,
-        allChunks: true
-      }),
-      new webpack.DefinePlugin(
-        Object.assign({
-          __PROD__: JSON.stringify(isProd),
-          __DEV__: JSON.stringify(!isProd),
-          __DEVSERVER__: JSON.stringify(isWebpackDevServer),
-          __DEVTOOLS__: JSON.stringify(isWebpackDevServer),
-          __CLIENT__: JSON.stringify(isClientBuild),
-          __SERVER__: JSON.stringify(!isClientBuild),
-          'process.env': {
-            NODE_ENV: JSON.stringify(isProd ? 'production' : 'development')
-          }
+    return ({
+        bail,
+        target: isTest ? 'node' : undefined,
+        devtool: isTest ? 'inline-source-map' : (isProd ? false : 'source-map'),
+        entry: isTest ? undefined : {
+            [`main${isProd ? '.min' : ''}`]: (
+                isWebpackDevServer ? [`webpack-dev-server/client?http://localhost:${port}`, 'webpack/hot/dev-server'] : []
+            ).concat(path.join(rootPath, 'src', 'javascript', 'root.js'))
         },
-          Object.keys(globals).reduce( // Stringify all the globals
-            (obj, k) => Object.assign(obj, {
-              [k]: JSON.stringify(globals[k])
+        output: isTest ? undefined : {
+            path: path.join(rootPath, 'www'),
+            filename: '[name].js',
+            libraryTarget: isClientBuild ? undefined : 'umd'
+        },
+        plugins: [
+            new HtmlWebpackPlugin({
+                inject: true,
+                template: path.resolve(rootPath, 'public/index.html'),
             }),
-            {}
-          )
-        )
-      )
-    ]
-    .concat(isClientBuild ? [
-      new HtmlWebpackPlugin({
-        minify: {},
-        getAppContent: () => (isSsr ? getServerString(options) : ''),
-        template: path.join(rootPath, 'src', 'index.ejs'),
-        inject: 'body'
-      })
-    ] : [])
-    .concat(isTest ? [] : new webpack.ProvidePlugin({
-      fetch: 'imports?this=>global!exports?global.fetch!whatwg-fetch'
-    }))
-    .concat(isWebpackDevServer ? [
-      new webpack.HotModuleReplacementPlugin()
-    ] : [])
-    .concat(isProd ? [
-      new webpack.optimize.UglifyJsPlugin({
-        output: {
-          comments: false
-        }
-      })
-    ] : []),
-    module: {
-      rules: []
-      // Very important that "instrumention" will be before other loaders in array, otherwise fail (what?)
-      .concat(isCoverage ? [
-        {
-          test: /\.(js|jsx)$/,
-          include: coveragePaths,
-          loader: {
-            loader: 'istanbul-instrumenter-loader'
-          }
-        }
-      ] : [])
-      .concat([
-        {
-          test: /\.js$/,
-          // exclude: /node_modules/,
-          include: [appSrc, commonSrc],
-          use: [
-            {
-              loader: 'babel-loader',
-              options: {
-                presets: ['es2015', 'stage-2', 'react'],
-                plugins: ['transform-runtime']
-              }
-            }
-          ]
+            new ExtractTextPlugin({
+                filename: '[name].css',
+                disable: isWebpackDevServer,
+                allChunks: true
+            }),
+            new webpack.DefinePlugin(
+                Object.assign({
+                        __PROD__: JSON.stringify(isProd),
+                        __DEV__: JSON.stringify(!isProd),
+                        __DEVSERVER__: JSON.stringify(isWebpackDevServer),
+                        __DEVTOOLS__: JSON.stringify(isWebpackDevServer),
+                        __CLIENT__: JSON.stringify(isClientBuild),
+                        __SERVER__: JSON.stringify(!isClientBuild),
+                        'process.env': {
+                            NODE_ENV: JSON.stringify(isProd ? 'production' : 'development')
+                        }
+                    },
+                    Object.keys(globals).reduce( // Stringify all the globals
+                        (obj, k) => Object.assign(obj, {
+                            [k]: JSON.stringify(globals[k])
+                        }),
+                        {}
+                    )
+                )
+            )
+        ]
+            .concat(isTest ? [] : new webpack.ProvidePlugin({
+                fetch: 'imports?this=>global!exports?global.fetch!whatwg-fetch'
+            }))
+            .concat(isWebpackDevServer ? [
+                new webpack.HotModuleReplacementPlugin()
+            ] : [])
+            .concat(isProd ? [
+                new webpack.optimize.UglifyJsPlugin({
+                    output: {
+                        comments: false
+                    }
+                })
+            ] : []),
+        module: {
+            rules: []
+            // Very important that "instrumention" will be before other loaders in array, otherwise fail (what?)
+                .concat(isCoverage ? [
+                    {
+                        test: /\.(js|jsx)$/,
+                        include: coveragePaths,
+                        loader: {
+                            loader: 'istanbul-instrumenter-loader'
+                        }
+                    }
+                ] : [])
+                .concat([
+                    {
+                        test: /\.js$/,
+                        exclude: /node_modules/,
+                        use: [
+                            {
+                                loader: 'babel-loader',
+                                options: {
+                                    presets: ['es2015', 'stage-2'],
+                                    plugins: ['transform-runtime']
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        test: /\.jsx$/,
+                        exclude: /node_modules/,
+                        use: [
+                            {
+                                loader: 'babel-loader',
+                                options: {
+                                    presets: ['es2015', 'stage-2', 'react'].concat(isWebpackDevServer ? ['react-hmre'] : []),
+                                    plugins: ['transform-runtime']
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        test: /\.css$/,
+                        use: ExtractTextPlugin.extract({
+                            use: [
+                                {
+                                    loader: 'css-loader'
+                                }
+                            ],
+                            fallback: 'style-loader'
+                        })
+                    }, {
+                        test: /\.scss$/,
+                        use: ExtractTextPlugin.extract({
+                            use: [
+                                {
+                                    loader: 'css-loader'
+                                },
+                                {
+                                    loader: 'resolve-url-loader',
+                                    options: {
+                                        fail: true
+                                    }
+                                },
+                                {
+                                    loader: 'sass-loader'
+                                }
+                            ],
+                            fallback: 'style-loader'
+                        })
+                    }, {
+                        test: /\.woff(2)?$/,
+                        use: [
+                            {
+                                loader: 'url-loader',
+                                options: {
+                                    limit: 10000,
+                                    name: './font/[hash].[ext]',
+                                    mimetype: 'application/font-woff'
+                                }
+                            }
+                        ]
+                    }, {
+                        test: /\.(ttf|eot|svg)$/,
+                        use: [
+                            {
+                                loader: 'url-loader',
+                                options: {
+                                    limit: 10000,
+                                    name: './font/[hash].[ext]'
+                                }
+                            }
+                        ]
+                    }, {
+                        test: /\.(gif|png)$/,
+                        use: [
+                            {
+                                loader: 'url-loader',
+                                options: {
+                                    limit: 10000,
+                                    name: './asset/[hash].[ext]'
+                                }
+                            }
+                        ]
+                    }
+                ])
         },
-        {
-          test: /\.jsx$/,
-          include: [appSrc, commonSrc],
-          // exclude: /node_modules/,
-          use: [
-            {
-              loader: 'babel-loader',
-              options: {
-                presets: ['es2015', 'stage-2', 'react'].concat(isWebpackDevServer ? ['react-hmre'] : []),
-                plugins: ['transform-runtime']
-              }
-            }
-          ]
+        resolve: {
+            modules: [
+                rootPath,
+                path.join(rootPath, 'node_modules')
+            ]
         },
-        {
-          test: /\.css$/,
-          use: ExtractTextPlugin.extract({
-            use: [
-              {
-                loader: 'css-loader'
-              }
-            ],
-            fallback: 'style-loader'
-          })
-        }, {
-          test: /\.scss$/,
-          use: ExtractTextPlugin.extract({
-            use: [
-              {
-                loader: 'css-loader'
-              },
-              {
-                loader: 'resolve-url-loader',
-                options: {
-                  fail: true
-                }
-              },
-              {
-                loader: 'sass-loader'
-              }
-            ],
-            fallback: 'style-loader'
-          })
-        }, {
-          test: /\.woff(2)?$/,
-          use: [
-            {
-              loader: 'url-loader',
-              options: {
-                limit: 10000,
-                name: './font/[hash].[ext]',
-                mimetype: 'application/font-woff'
-              }
-            }
-          ]
-        }, {
-          test: /\.(ttf|eot|svg)$/,
-          use: [
-            {
-              loader: 'url-loader',
-              options: {
-                limit: 10000,
-                name: './font/[hash].[ext]'
-              }
-            }
-          ]
-        }, {
-          test: /\.(gif|png)$/,
-          use: [
-            {
-              loader: 'url-loader',
-              options: {
-                limit: 10000,
-                name: './asset/[hash].[ext]'
-              }
-            }
-          ]
-        }
-      ])
-    },
-    resolve: {
-      modules: [
-        rootPath,
-        path.join(rootPath, 'node_modules')
-      ]
-    },
-    externals: []
-    .concat(isTest ? nodeExternals() : [])
-  });
+        externals: []
+            .concat(isTest ? nodeExternals() : [])
+    });
 };
 
 /**
@@ -226,40 +213,40 @@ const getWebpackConfig = (options = ({}), privateOptions = ({})) => {
  * @return {String}         String which contains the server rendered app
  */
 getServerString = options => {
-  // Requiring dependencies here because there is no need or use while running eslint (which also imports webpack config).
-  // Some packages like `deasync` fail while running from some IDE's
-  /* eslint-disable global-require */
-  const requireFromString = require('require-from-string');
-  const MemoryFS = require('memory-fs');
-  const deasync = require('deasync');
-  /* eslint-enable global-require */
+    // Requiring dependencies here because there is no need or use while running eslint (which also imports webpack config).
+    // Some packages like `deasync` fail while running from some IDE's
+    /* eslint-disable global-require */
+    const requireFromString = require('require-from-string');
+    const MemoryFS = require('memory-fs');
+    const deasync = require('deasync');
+    /* eslint-enable global-require */
 
-  const { isProd } = options;
-  const bundlePath = path.join(rootPath, 'www', `app${isProd ? '.min' : ''}.js`);
+    const { isProd } = options;
+    const bundlePath = path.join(rootPath, 'www', `app${isProd ? '.min' : ''}.js`);
 
-  const memoryFs = new MemoryFS();
+    const fs = new MemoryFS();
 
-  const compiler = webpack(
-    getWebpackConfig(options, { isClientBuild: false })
-  );
+    const compiler = webpack(
+        getWebpackConfig(options, { isClientBuild: false })
+    );
 
-  let sync = true;
-  let data = null;
-  compiler.outputFileSystem = memoryFs;
-  compiler.run(err => {
-    if (err) {
-      throw err;
+    let sync = true;
+    let data = null;
+    compiler.outputFileSystem = fs;
+    compiler.run(err => {
+        if (err) {
+            throw err;
+        }
+        const fileContent = fs.readFileSync(bundlePath).toString('ascii');
+        data = requireFromString(fileContent);
+        sync = false;
+    });
+
+    while (sync) {
+        deasync.sleep(100);
     }
-    const fileContent = memoryFs.readFileSync(bundlePath).toString('ascii');
-    data = requireFromString(fileContent);
-    sync = false;
-  });
 
-  while (sync) {
-    deasync.sleep(100);
-  }
-
-  return data;
+    return data;
 };
 
 module.exports = getWebpackConfig;

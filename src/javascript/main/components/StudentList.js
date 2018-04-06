@@ -10,7 +10,7 @@ import { path, values } from '../../commons/configs';
 import { push } from 'react-router-redux';
 
 import { Button, List, Modal } from 'antd-mobile';
-import { APICaller } from 'wink_mobile_commons/dist/api';
+import { APICaller } from '../../mobileCommons/api';
 
 const Item = List.Item;
 

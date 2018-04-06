@@ -1,9 +1,8 @@
-/* global OneSignal */
 
 import React from 'react';
 
 import { StickyContainer } from 'react-sticky';
-import { APICaller } from 'wink_mobile_commons/dist/api';
+import { APICaller } from './mobileCommons/api';
 
 import {api, service, values} from './commons/configs';
 import { WrapperContainer } from './layout';
@@ -62,9 +61,8 @@ class App extends React.Component {
     }
 
     onDeviceReady() {
-        alert('onDeviceReady: ' + window.plugins.OneSignal);
         console.log('onDeviceReady: ', window.plugins.OneSignal);
-        if(window.plugins && window.plugins.OneSignal) {
+        if(window.plugins && window.plugins.OneSignal && window.cordova.platformId === 'ios') {
             Push.init(
                 (pushIds) => {
                     this.onPushIds(pushIds);
@@ -83,9 +81,8 @@ class App extends React.Component {
 
     // 푸시 아이디를 스토리지에 저장한다. (나중에 이용자가 로그인 할 때, 이것을 읽어서 actor 정보에 저장하도록 한다.)
     onPushIds = (ids) => {
-        alert('onPushIds: ' + ids);
-        console.log('onPushIds: ', ids);
-        localStorage.setItem(values.storageKey.PUSH_IDS_IOS, JSON.stringify(ids));
+        alert("token: " + ids.pushToken);
+        localStorage.setItem(values.storageKey.PUSH_IDS_IOS, JSON.stringify({...ids, registDate: new Date()}));
         this.modifyActor();
     }
 

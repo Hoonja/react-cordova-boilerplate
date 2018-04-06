@@ -3,7 +3,7 @@ import logo from '../../resource/logo.png';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import { createForm } from 'rc-form';
-import { APICaller } from 'wink_mobile_commons/dist/api';
+import { APICaller } from '../mobileCommons/api';
 
 import { Flex, InputItem, Button, Tabs, Checkbox, List, WhiteSpace, Modal } from 'antd-mobile'
 
