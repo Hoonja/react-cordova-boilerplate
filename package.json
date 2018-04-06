@@ -11,7 +11,7 @@
     "author": "Apache Cordova Team",
     "license": "Apache-2.0",
     "dependencies": {
-        "antd-mobile": "^2.1.6",
+        "antd-mobile": "2.1.6",
         "axios": "^0.16.2",
         "cordova-ios": "^4.5.4",
         "danbi-msgclient": "^0.1.2",

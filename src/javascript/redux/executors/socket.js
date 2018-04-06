@@ -13,18 +13,25 @@ let actorId, currentRtc, roomName;
 const makeRTC = (socket, params = null) => {
     const connection = new SocketIOConnection(socket, { eventPrefix: 'rtc'});
 
+    console.log('makeRTC: ', params);
+
     return new SimpleWebRTC({
         connection,
         autoRequestMedia: true,
         // peerVolumeWhenSpeaking: 0.75, // 의미없음
         // adjustPeerVolume: true, // 문제가 더 심각해짐
-        ...params,
+        // ...params,
+        localVideoEl: params.localVideoEl,
         // https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints
         media: {
             video: {
                 facingMode: {ideal: 'user'},
                 width: {ideal: 280 },
-                height: {ideal: 210 }
+                height: {ideal: 210 },
+                frameRate: {
+                    min: 1,
+                    max: 15
+                }
             },
             audio: {
                 ...values.mediaConfig.audio,
@@ -96,8 +103,9 @@ const initialize = (socket, emit, dispatch, isReconnect, resource) => {
     emit('login', {authToken, actorId});
 
     const rtc = makeRTC(socket, resource);
+    rtc.webrtc.config.peerConnectionConfig.iceTransports = 'relay';
 
-    dispatch(creator.initRTC(rtc));
+    dispatch(creator.initRTC(rtc, resource));
 
     eventsWithDispatch(rtc, emit, dispatch, isReconnect);
 

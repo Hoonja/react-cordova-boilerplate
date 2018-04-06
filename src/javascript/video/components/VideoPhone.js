@@ -23,7 +23,8 @@ const mapStateToProps = ({ fetch, security, socket }) => {
         status: socket.status,
         local: socket.local,
         callState: socket.callState,
-        talkInfo
+        talkInfo,
+        resource: socket.resource
     }
 };
 const mapDispatchProps = dispatch => ({
@@ -41,7 +42,7 @@ class VideoPhone extends Component {
             audioOn: true,
             pauseVideo: false,
             loaded: true,
-            videoOn: true,
+            videoOn: true
         };
         this.roomId = '7292_7293';
     }
@@ -62,9 +63,15 @@ class VideoPhone extends Component {
         console.log('did update: ', local, callState);
         if(local && keys.length === 0) {
             if(callState === 'remoteRemove') {
+                var vids = document.getElementById('divVidPeer');
+                console.log(vids);
                 this.disconnect(values.callState.CALL_END);
             } else {
-                this.onLocalStream(local);
+                const myVidbox = document.querySelector('#vidbox');
+                console.log('didupdate: ', myVidbox.childElementCount);
+                if(myVidbox.childElementCount === 0) {
+                    this.onLocalStream(local);
+                }
             }
         }
         // this.onLocalStream(local);
@@ -89,20 +96,22 @@ class VideoPhone extends Component {
     }
 
     onLocalStream(stream) {
-        console.log('onLocalStream');
-        setTimeout(() => {
-            var vidSelf = document.getElementById('vidSelf');
-            vidSelf.className = "video-loaded";
-            if (vidSelf && vidSelf.paused) {
-                console.log('vidSelf.play()');
-                vidSelf.volume = 0;
+        var vidSelf = service.getValue(this.props, 'resource.vidSelf', '');
+        const myVidbox = document.querySelector('#vidbox');
+        console.log('onLocalStream', vidSelf, myVidbox);
+
+        vidSelf.className = "video-loaded";
+        myVidbox.appendChild(vidSelf);
+
+        if (vidSelf && vidSelf.paused) {
+            console.log('vidSelf.play()');
+            if (window.cordova && window.cordova.plugins && window.cordova.plugins.iosrtc) {
+                console.log('window.cordova.plugins.iosrtc.refreshVideos()', window.cordova.plugins.iosrtc.refreshVideos());
+                window.cordova.plugins.iosrtc.refreshVideos();
+            } else {
                 vidSelf.play();
-                if (window.cordova && window.cordova.plugins && window.cordova.plugins.iosrtc) {
-                    window.cordova.plugins.iosrtc.refreshVideos();
-                }
             }
-            vidSelf.volume = 0;
-        }, 0);
+        }
     }
     componentWillUnmount() {
         // if (this.props.rtc) {
@@ -120,9 +129,6 @@ class VideoPhone extends Component {
     }
 
     prepareWebRTC = () => {
-        if (window.cordova.platformId === 'ios') {
-            window.cordova.plugins.iosrtc.registerGlobals();
-        }
         this.connect();
     }
 
@@ -331,6 +337,7 @@ class VideoPhone extends Component {
             let arr = [];
             let inx = 30;
             while(inx-- > 0) arr.push(900, 500);
+            console.log(arr);
             navigator.vibrate(arr);
         }
     }
@@ -367,7 +374,8 @@ class VideoPhone extends Component {
         return (
             <div>
                 <Flex className="videophone-area">
-                    <video id="vidSelf" className="video-loading" autoPlay poster="https://s.wink.co.kr/images/parent/video_poster_parent_parent.png"></video>
+                    <div id="vidbox"></div>
+                    {/*<video id="vidSelf" className="video-loading" autoPlay poster="https://s.wink.co.kr/images/parent/video_poster_parent_parent.png"></video>*/}
                     <div id="divVidPeer"></div>
                 </Flex>
                 <div className="videophone-student-division">

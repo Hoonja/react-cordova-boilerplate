@@ -36,7 +36,16 @@ class VideoContainer extends React.Component {
     }
 
     componentDidMount() {
-        this.props.connect({localResource: {localVideoEl: 'vidSelf'}});
+        const vidSelf = document.createElement('VIDEO');
+        vidSelf.autoplay = true;
+        vidSelf.volume = 0;
+        vidSelf.width = "100%";
+        vidSelf.id = 'vidSelf';
+        vidSelf.className = 'video-loading';
+
+        console.log('connect: ', vidSelf);
+
+        this.props.connect({localResource: {localVideoEl: 'vidSelf', vidSelf}});
         // this.getList();
     }
 

@@ -69,11 +69,12 @@ export const initTalk = (talk) => {
 };
 
 
-export const initRTC = (rtc) => {
+export const initRTC = (rtc, resource) => {
     return {
         type: type.RTC_INIT,
         payload: {
-            rtc
+            rtc,
+            resource
         }
     }
 };

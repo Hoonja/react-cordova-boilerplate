@@ -62,6 +62,9 @@ class App extends React.Component {
 
     onDeviceReady() {
         console.log('onDeviceReady: ', window.plugins.OneSignal);
+        if (window.cordova.platformId === 'ios') {
+            window.cordova.plugins.iosrtc.registerGlobals();
+        }
         if(window.plugins && window.plugins.OneSignal && window.cordova.platformId === 'ios') {
             Push.init(
                 (pushIds) => {
@@ -72,10 +75,6 @@ class App extends React.Component {
                 }
             );
         }
-        navigator.getUserMedia  = navigator.getUserMedia ||
-          navigator.webkitGetUserMedia ||
-          navigator.mozGetUserMedia ||
-          navigator.msGetUserMedia;
         requestPermissions();
     }
 
