@@ -58,7 +58,7 @@ export const socket = Object.freeze({
     RTC_CONNECT: '@@SOCKET/RTC_CONNECT',
     RTC_DISCONNECT: '@@SOCKET/RTC_DISCONNECT',
 
-    RTC_VIDEO_CALL_STATE: 'SOCKET/RTC_VIDEO_CALL_STATE',
+    RTC_VIDEO_CALL_STATUS: 'SOCKET/RTC_VIDEO_CALL_STATUS',
 });
 
 export default socket;

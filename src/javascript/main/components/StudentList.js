@@ -29,7 +29,7 @@ const mapDispatchToProps = (dispatch) => {
         get: (url, params) => dispatch(fetch.get(url, params)),
         multipleList: (list) => dispatch(fetch.multipleList(list)),
         move: (location) => dispatch(push(location)),
-        updateVideoCallState: (callState, item) => dispatch(action.updateVideoCallState(callState, item))
+        updateVideoCallStatus: (callStatus, item) => dispatch(action.updateVideoCallStatus(callStatus, item))
     }
 };
 
@@ -65,7 +65,7 @@ class StudentList extends React.Component {
             .then(() => {
                 const {room} = this.props;
                 if(room.id) {
-                    this.props.updateVideoCallState(values.callState.REQUEST, {});
+                    this.props.updateVideoCallStatus(values.callStatus.REQUEST, {});
                     this.props.move(path.video);
                 } else {
                     console.log('room이 없음');
@@ -92,7 +92,7 @@ class StudentList extends React.Component {
             fromName: '정주어',
             fromActorId: '7293'
         };
-        this.props.updateVideoCallState(values.callState.RECEIVED, receiveInfo);
+        this.props.updateVideoCallStatus(values.callStatus.RECEIVED, receiveInfo);
         this.props.move(path.video);
     }
 

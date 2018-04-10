@@ -13,7 +13,13 @@
     "dependencies": {
         "antd-mobile": "2.1.6",
         "axios": "^0.16.2",
+        "cordova-android": "^7.0.0",
         "cordova-ios": "^4.5.4",
+        "cordova-plugin-android-permissions": "^1.0.0",
+        "cordova-plugin-app-version": "~0.1.9",
+        "cordova-plugin-iosrtc": "^4.0.2",
+        "cordova-plugin-vibration": "~3.0.1",
+        "cordova-plugin-whitelist": "1",
         "danbi-msgclient": "^0.1.2",
         "danbi-simplewebrtc": "^0.1.2",
         "fetch-jsonp": "^1.1.1",
@@ -41,13 +47,7 @@
         "socket.io-client": "^2.0.4",
         "webpack-dev-server": "^2.10.1",
         "wink_mobile_commons": "git+https://github.com/DanbiEduCorp/wink_mobile_commons.git",
-        "xcode": "^1.0.0",
-        "cordova-android": "^7.0.0",
-        "cordova-plugin-android-permissions": "^1.0.0",
-        "cordova-plugin-whitelist": "1",
-        "cordova-plugin-vibration": "~3.0.1",
-        "cordova-plugin-app-version": "~0.1.9",
-        "cordova-plugin-iosrtc": "^4.0.2"
+        "xcode": "^1.0.0"
     },
     "devDependencies": {
         "autoprefixer": "^7.2.4",

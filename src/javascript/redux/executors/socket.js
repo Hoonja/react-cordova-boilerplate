@@ -5,12 +5,21 @@ import {SocketIOConnection} from 'danbi-msgclient';
 import {Toast} from 'antd-mobile';
 import {socket as creator} from '../creators';
 import {socket as type} from '../types';
-import {values} from '../../commons/configs';
+import {service, values} from '../../commons/configs';
 
 const authToken = '*danbi*';
 let actorId, currentRtc, roomName;
 
 const makeRTC = (socket, params = null) => {
+    const vidSelf = document.createElement('VIDEO');
+    vidSelf.autoplay = true;
+    vidSelf.volume = 0;
+    vidSelf.style.height = '80vh';
+    vidSelf.style.width = '80vw';
+    vidSelf.id = 'vidSelf';
+    vidSelf.className = 'video-loading';
+    this.vidSelf = vidSelf;
+
     const connection = new SocketIOConnection(socket, { eventPrefix: 'rtc'});
 
     console.log('makeRTC: ', params);
@@ -21,7 +30,7 @@ const makeRTC = (socket, params = null) => {
         // peerVolumeWhenSpeaking: 0.75, // 의미없음
         // adjustPeerVolume: true, // 문제가 더 심각해짐
         // ...params,
-        localVideoEl: params.localVideoEl,
+        localVideoEl: 'vidSelf',
         // https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints
         media: {
             video: {
@@ -41,25 +50,65 @@ const makeRTC = (socket, params = null) => {
     });
 };
 
+const onLocalStream = () => {
+    const myVidbox = document.getElementById('vidbox');
+    console.log('onLocalStream: ', myVidbox, myVidbox.hasChildNodes());
+
+    this.vidSelf.className = "video-loaded";
+    myVidbox.appendChild(this.vidSelf);
+
+    if (window.cordova && window.cordova.plugins && window.cordova.plugins.iosrtc) {
+        console.log('refreshVideos()');
+        window.cordova.plugins.iosrtc.refreshVideos();
+    } else {
+        console.log('vidSelf.play()');
+        this.vidSelf.play();
+    }
+};
+
+const stopVibrate = () => {
+    if(navigator.vibrate) {
+        navigator.vibrate(0);
+    }
+};
+const appendRemoteVideo = (video, peer) => {
+    var vids = document.getElementById('divVidPeer');
+    stopVibrate();
+    // this.onStartTimer();
+
+    video.height = '100%';
+    video.poster = 'https://s.wink.co.kr/images/parent/video_poster_parent_student.png';
+    video.style.backgroundColor = 'black';
+
+    vids.appendChild(video);
+
+    var vidSelf = document.getElementById('vidSelf');
+    vidSelf.style.zIndex = 100;
+    setTimeout(() => {
+        vidSelf.className = 'my-video';
+    }, 100);
+};
+
 const eventsWithDispatch = (rtc, emit, dispatch, isReconnect) => {
-    console.log('eventsWithDispatch: ', rtc);
     rtc.on('localStream', (stream) => {
         console.log('[eventsWithDispatch]: localStream');
         // Notice: 화상 교육 화면에서 처음 message 호출하면 오류 발생 antd 2.13.4 기준)
         dispatch(creator.localStream(stream));
+        onLocalStream();
     });
     rtc.on('readyToCall', () => {
         console.log('[eventsWithDispatch]: readyToCall');
         emit('usePlugin', {id: 'rtc'});
         // 재연결 관련 로직 추가
         if(isReconnect && roomName) {
-            rtc.joinRoom(roomName);
+            // rtc.joinRoom(roomName);
         }
     });
 
     rtc.on('videoAdded', (video, peer) => {
         console.log('[eventsWithDispatch]: videoAdded');
         dispatch(creator.appendRemote(video, peer));
+        appendRemoteVideo(video, peer);
         roomName = rtc.roomName;
     });
 
@@ -103,7 +152,8 @@ const initialize = (socket, emit, dispatch, isReconnect, resource) => {
     emit('login', {authToken, actorId});
 
     const rtc = makeRTC(socket, resource);
-    rtc.webrtc.config.peerConnectionConfig.iceTransports = 'relay';
+
+    // rtc.webrtc.config.peerConnectionConfig.iceTransports = 'relay';
 
     dispatch(creator.initRTC(rtc, resource));
 

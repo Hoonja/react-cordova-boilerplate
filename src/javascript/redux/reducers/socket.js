@@ -106,10 +106,10 @@ export const socket = (state = initialState, action) => {
         case type.RTC_LESSON_CONNECT_STATUS:
             return {...state, ...action.payload, camera: values.camera.FACE, point: 0, shared: undefined};
         case type.RTC_REMOTE_APPEND:
-            return {...state, remote : {...state.remote, ...action.payload.remote}, callState: values.callState.REMOTE_APPEND};
+            return {...state, remote : {...state.remote, ...action.payload.remote}, rtcStatus: values.rtcStatus.REMOTE_APPEND};
         case type.RTC_REMOTE_REMOVE:
             delete state.remote[action.payload.remote];
-            return {...state, remote : {...state.remote}, callState: values.callState.REMOTE_REMOVE};
+            return {...state, remote : {...state.remote}, rtcStatus: values.rtcStatus.REMOTE_REMOVE};
         case type.RTC_CAMERA_DID_CHANGE:
             return {...state, ...action.payload};
         case type.RTC_CAMERA_QUALITY_DID_CHANGE:
@@ -134,7 +134,7 @@ export const socket = (state = initialState, action) => {
             return {...state, localResource: {...state.localResource, audioConfig: action.payload.audioConfig}};
         case type.RTC_CONNECT_STATUS:
             return {...state, ...action.payload, camera: values.camera.FACE, point: 0, shared: undefined};
-        case type.RTC_VIDEO_CALL_STATE:
+        case type.RTC_VIDEO_CALL_STATUS:
             return {...state, ...action.payload};
         default:
             return state;

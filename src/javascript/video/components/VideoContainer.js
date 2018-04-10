@@ -8,13 +8,14 @@ import { Settings } from './';
 import {VideoPhone} from "./";
 import {push} from "react-router-redux";
 
-const mapStateToProps = ({ fetch, security }) => {
+const mapStateToProps = ({ fetch, security, socket }) => {
     const room = service.getValue(fetch, 'multipleList.room', {});
     const student = service.getValue(room, 'sdata.studentDetail', {});
     return {
         parent: {...security.actor},
         student,
-        room
+        room,
+        socket
     }
 };
 const mapDispatchToProps = (dispatch) => {
@@ -36,16 +37,20 @@ class VideoContainer extends React.Component {
     }
 
     componentDidMount() {
-        const vidSelf = document.createElement('VIDEO');
-        vidSelf.autoplay = true;
-        vidSelf.volume = 0;
-        vidSelf.width = "100%";
-        vidSelf.id = 'vidSelf';
-        vidSelf.className = 'video-loading';
-
-        console.log('connect: ', vidSelf);
-
-        this.props.connect({localResource: {localVideoEl: 'vidSelf', vidSelf}});
+        // var vidSelf = service.getValue(this.props, 'socket.resource.vidSelf', '');
+        // if( ! vidSelf) {
+        //     vidSelf = document.createElement('VIDEO');
+        //     vidSelf.autoplay = true;
+        //     vidSelf.volume = 0;
+        //     vidSelf.style.height = '80vh';
+        //     vidSelf.style.width = '80vw';
+        //     vidSelf.id = 'vidSelf';
+        //     vidSelf.className = 'video-loading';
+        //
+        //     console.log('connect: ', this.props.socket);
+        //
+        // }
+        this.props.connect({localResource: {localVideoEl: 'vidSelf'}});
         // this.getList();
     }
 

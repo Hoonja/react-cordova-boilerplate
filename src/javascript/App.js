@@ -61,7 +61,6 @@ class App extends React.Component {
     }
 
     onDeviceReady() {
-        console.log('onDeviceReady: ', window.plugins.OneSignal);
         if (window.cordova.platformId === 'ios') {
             window.cordova.plugins.iosrtc.registerGlobals();
         }
@@ -86,7 +85,6 @@ class App extends React.Component {
 
     // 푸시 메세지 수신 시 처리한다.
     onPushNotify = (data) => {
-        console.log('[PushContainer] onPushNotify', data);
         if (data.handleType === 'opened') {
             // data.notification = {
             // 	displayType: 0,

@@ -54,7 +54,7 @@ const getUrl = (url, type, query, cmd = values.cmd.PLAY, ext) => {
     return {Url: url, type};
 };
 const getBaseMessage = (user, student) => {
-    const roomId = user.actorId === 12126 ? '7291_7293' : `${user.actorId}_${student && student.id}`;
+    const roomId = `${user.actorId}_${student}`;
     return {fromName: user.humanName, fromActorId: user.actorId, roomId};
 };
 
@@ -103,6 +103,7 @@ const connectLesson = (dispatch, socket, user, student, useRelay) => {
 
 const leaveRoom = (rtc) => {
     if(rtc) {
+        console.log('leave room: ', rtc);
         rtc.stopLocalVideo();
         rtc.leaveRoom();
         rtc.dispose();
@@ -463,8 +464,8 @@ export const updateVideoCallConnectStatus = (status, student, useRelay) => {
     }
 };
 
-export const updateVideoCallState = (callState) => {
-    return (dispatch, getState) => {
-        dispatch(creator.rtcVideoCallState(callState));
+export const updateVideoCallStatus = (callStatus) => {
+    return (dispatch) => {
+        dispatch(creator.rtcVideoCallStatus(callStatus));
     }
 }
