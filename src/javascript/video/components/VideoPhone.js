@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import studentM from '../../../resource/student_m.png';
 import studentW from '../../../resource/student_w.png';
 import {service, values, api} from '../../commons/configs';
-import {CustomIcon} from '../../commons/components';
+import {CustomIcon, Duration} from '../../commons/components';
 import {socket as action, fetch} from '../../redux/actions';
 import Loader from 'react-loader';
 
@@ -32,7 +32,9 @@ const mapDispatchProps = dispatch => ({
     update: (url, params) => dispatch(fetch.update(url, params)),
     simpleUpdate: (url, params) => dispatch(fetch.simpleUpdate(url, params)),
     updateStatus: (status, student, useRelay) => dispatch(action.updateVideoCallConnectStatus(status, student, useRelay)),
-    emit: (params) => dispatch(action.emitTalk(params))
+    emit: (params) => dispatch(action.emitTalk(params)),
+    reset: () => dispatch(fetch.reset()),
+
 });
 
 class VideoPhone extends Component {
@@ -50,76 +52,72 @@ class VideoPhone extends Component {
     componentDidMount() {
         if (window.cordova !== undefined) {
             document.addEventListener('deviceready', this.onDeviceReady.bind(this), false);
+            document.addEventListener('orientationchange', this.onRefreshVideos.bind(this), false);
         }
     }
     componentWillUnmount() {
         document.removeEventListener('deviceready', this.onDeviceReady.bind(this), false);
+        document.removeEventListener('orientationchange', this.onRefreshVideos.bind(this), false);
+    }
+
+    onRefreshVideos() {
+        if (window.cordova && window.cordova.plugins && window.cordova.plugins.iosrtc) {
+            // window.cordova.plugins.iosrtc.refreshVideos();
+            (function refreshVideos () {
+                window.cordova.plugins.iosrtc.refreshVideos();
+                requestAnimationFrame(refreshVideos);
+            }());
+        }
     }
 
     componentDidUpdate(prevProps) {
         const {remote, rtcStatus} = this.props;
         const keys = Object.keys(remote);
-        // console.log('videophone didupdate: ', prevProps.rtcStatus, rtcStatus);
         if(prevProps.rtcStatus !== rtcStatus) {
             if(rtcStatus === values.rtcStatus.REMOTE_APPEND) {
-                // this.appendRemoteVideo(remote[keys[0]]);
+                this.appendRemoteVideo(remote[keys[0]]);
             } else if(rtcStatus === values.rtcStatus.REMOTE_REMOVE) {
+                console.log('did update: remote remove');
                 this.disconnect(values.rtcStatus.CALL_END);
             }
         }
-        // if(local && keys.length === 0) {
-        //     if(rtcStatus === 'remoteRemove') {
-        //         this.disconnect(values.rtcStatus.CALL_END);
-        //     } else {
-        //         if(!myVidbox.hasChildNodes()) {
-        //             this.onLocalStream(local);
-        //         }
-        //     }
-        // }
-        // if (window.cordova && window.cordova.plugins && window.cordova.plugins.iosrtc) {
-        //     console.log('didupdate, refreshVideos()');
-        //     window.cordova.plugins.iosrtc.refreshVideos();
-        // }
-        // this.onLocalStream(local);
     }
 
     appendRemoteVideo({video, peer}) {
-        var vids = document.getElementById('divVidPeer');
+        var peerVideoBox = document.getElementById('peerVideoBox');
         this.stopVibrate();
-        this.onStartTimer();
+        // this.onStartTimer();
+        video.style.zIndex = -2;
+        video.style.width = '100%';
+        video.style.height = '100%';
+        video.className = 'peer-video';
 
-        video.height = '100%';
-        video.poster = 'https://s.wink.co.kr/images/parent/video_poster_parent_student.png';
-        video.style.backgroundColor = 'black';
+        peerVideoBox.className = 'peer-video-box';
+        peerVideoBox.appendChild(video);
 
-        vids.appendChild(video);
-
-        var vidSelf = document.getElementById('vidSelf');
-        vidSelf.style.zIndex = 100;
         setTimeout(() => {
-            vidSelf.className = 'my-video';
-        }, 100);
+            const myVideoBoxSmall = document.getElementById('myVideoBoxSmall');
+            myVideoBoxSmall.appendChild(this.myVideo || document.getElementById("myVideo"));
+            if (window.cordova && window.cordova.plugins && window.cordova.plugins.iosrtc) {
+                window.cordova.plugins.iosrtc.refreshVideos();
+            }
+        }, 300);
     }
-
-    onLocalStream() {
-        var vidSelf = service.getValue(this.props, 'resource.vidSelf', '');
-        const myVidbox = document.getElementById('vidbox');
-        console.log('onLocalStream: ', myVidbox, myVidbox.hasChildNodes());
-
-        vidSelf.className = "video-loaded";
-        myVidbox.appendChild(vidSelf);
-
-        if (window.cordova && window.cordova.plugins && window.cordova.plugins.iosrtc) {
-            console.log('refreshVideos()');
-            window.cordova.plugins.iosrtc.refreshVideos();
-        } else {
-            console.log('vidSelf.play()');
-            vidSelf.play();
-        }
-        // if (vidSelf && vidSelf.paused) {
-        //     console.log('vidSelf.play()');
-        // }
-    }
+    //
+    // onLocalStream() {
+    //     console.log('videophone: onlocalstream()');
+    //     var vidSelf = service.getValue(this.props, 'resource.vidSelf', '');
+    //     const myVidbox = document.getElementById('videophone-area');
+    //
+    //     // vidSelf.className = "video-loaded";
+    //     myVidbox.appendChild(vidSelf);
+    //
+    //     if (window.cordova && window.cordova.plugins && window.cordova.plugins.iosrtc) {
+    //         window.cordova.plugins.iosrtc.refreshVideos();
+    //     } else {
+    //         vidSelf.play();
+    //     }
+    // }
     componentWillUnmount() {
         // if (this.props.rtc) {
         //     unbindHandlers(this.rtc, this.rtcHandlers);
@@ -135,20 +133,11 @@ class VideoPhone extends Component {
     }
 
     prepareWebRTC() {
-        // console.log('a');
-        // this.onLocalStream();
-        // console.log('b');
-        // setTimeout(() => {
-            console.log('c');
-            this.connect();
-            console.log('d');
-        // });
+        this.connect();
     }
 
     connectRoom() {
         const {student} = this.props.data;
-        console.log('connectRoom props.student:', this.props.student);
-        console.log('connectRoom data.student:', student);
 
         setTimeout(() => {
             this.props.updateStatus(values.callStatus.CONNECT, student.id, false );
@@ -165,7 +154,6 @@ class VideoPhone extends Component {
             room.name = "7291_7293";
         }
 
-        console.log('[VideoPhone] connect', serverUrl, room.name, parent.id, parent.authHumanName);
         this.serverUrl = serverUrl;
         this.roomId = room.name;
         this.actorId = parent.id;
@@ -181,20 +169,17 @@ class VideoPhone extends Component {
     }
 
     disconnect(state) {
-        console.log('[VideoPhone] disconnect');
         const {status} = this.props;
         const {student} = this.props.data;
-
-        const myVidbox = document.querySelector('#vidbox');
-        console.log('disconnect before: ',myVidbox.hasChildNodes() );
-        while(myVidbox.hasChildNodes()) { myVidbox.removeChild(myVidbox.firstChild)}
-        console.log('disconnect after: ',myVidbox.hasChildNodes() );
         if(status === values.callStatus.CONNECT) {
             this.props.updateStatus(values.callStatus.DISCONNECT, student.id, false );
         }
-        this.onStopTimer();
-        this.setTalk(state);
         this.stopVibrate();
+        // this.onStopTimer();
+        setTimeout(() => {
+            console.log('disconnec t', this.state);
+            this.setTalk(state);
+        });
         this.props.onClose();
     }
 
@@ -253,10 +238,11 @@ class VideoPhone extends Component {
 
     completeVideoTalk(state) {
         const {room, talkInfo, student} = this.props;
-        const {duration} = this.state;
         const params = {
-            state,
-            duration: moment(duration).format('mm:ss') // this.state.curTime - this.state.startTime
+            data: {
+                state,
+                duration: this.duration // this.state.curTime - this.state.startTime
+            }
         };
         const obj = api.modifyTalk(talkInfo.id, params);
         return this.props.simpleUpdate(obj.url, obj.params)
@@ -267,6 +253,9 @@ class VideoPhone extends Component {
             .then(() => {
                 return this.props.emit({to: student.id, room: room.id, text: '통화성공'});
             })
+            .then(() => {
+                return this.props.reset();
+            });
     }
 
     failVideoTalk(state) {
@@ -277,13 +266,16 @@ class VideoPhone extends Component {
         };
         const obj = api.modifyTalk(talkInfo.id, params);
         return this.props.simpleUpdate(obj.url, obj.params)
-          .then(() => {
-              const setObj = api.setTalk(talkInfo.id, {status: 99});
-              return this.props.update(setObj.url, setObj.params);
-          })
-          .then(() => {
-              return this.props.emit({to: student.id, room: room.id, text: '통화실패'});
-          })
+            .then(() => {
+                const setObj = api.setTalk(talkInfo.id, {status: 99});
+                return this.props.update(setObj.url, setObj.params);
+            })
+            .then(() => {
+                return this.props.emit({to: student.id, room: room.id, text: '통화실패'});
+            })
+            .then(() => {
+                return this.props.reset();
+            });
     }
 
     setTalk(state) {
@@ -318,15 +310,14 @@ class VideoPhone extends Component {
     }
 
     renderCallStatus() {
-        const { duration } = this.state;
-        const { status, rtcStatus } = this.props;
+        const { callStatus, rtcStatus } = this.props;
 
-        if (rtcStatus === values.rtcStatus.REQUEST) {
+        if(rtcStatus === values.rtcStatus.REMOTE_APPEND) {
+            return (<Duration format={'mm:ss'} on={this.getTimerStatus()} setDuration={this.setDuration.bind(this)}/>);
+        } else if (callStatus === values.callStatus.REQUEST) {
             return '연결중입니다.';
-        } else if (rtcStatus === values.rtcStatus.RECEIVED) {
+        } else if (callStatus === values.callStatus.RECEIVED) {
             return '전화 왔습니다.';
-        } else if (status === values.callStatus.CONNECT) {
-            return moment(duration).format('mm:ss');
         }
     }
 
@@ -358,7 +349,6 @@ class VideoPhone extends Component {
 
     startVibrate() {
         if(navigator.vibrate) {
-
             if (window.cordova.platformId === 'ios') {
                 navigator.vibrate();
             } else {
@@ -371,27 +361,20 @@ class VideoPhone extends Component {
         }
     }
 
-    run() {
-        const {startTime} = this.state;
-
-        this.animationId = requestAnimationFrame(() => {
-            this.setState({
-                duration: moment().diff(startTime)
-            });
-            this.run();
-        });
-    }
-
-    onStartTimer() {
+    setDuration = (duration) => {
         this.setState({
-            startTime: new Date()
+            duration
         });
-        this.run();
-    }
+        this.duration = duration;
 
-    onStopTimer(){
-        if(this.animationId) {
-            cancelAnimationFrame(this.animationId);
+    };
+
+    getTimerStatus() {
+        const {status, rtcStatus} = this.props;
+        if(status === values.callStatus.CONNECT && rtcStatus === values.rtcStatus.REMOTE_APPEND) {
+            return true;
+        } else if(status === values.callStatus.DISCONNECT) {
+            return false;
         }
     }
 
@@ -449,11 +432,10 @@ class VideoPhone extends Component {
 
         return (
             <div>
-                <Flex className="videophone-area">
-                    <div id="vidbox"></div>
-                    {/*<video id="vidSelf" className="video-loading" autoPlay poster="https://s.wink.co.kr/images/parent/video_poster_parent_parent.png"></video>*/}
-                    <div id="divVidPeer"></div>
-                </Flex>
+                <div id="myVideoBox"></div>
+                <div id="peerVideoBox"></div>
+                <div id="myVideoBoxSmall" className="my-video-box-small"></div>
+                {/*<video id="vidSelf" className="video-loading" autoPlay poster="https://s.wink.co.kr/images/parent/video_poster_parent_parent.png"></video>*/}
                 <div className="videophone-student-division">
                     <Flex direction="column">
                         {rtcStatus !== values.rtcStatus.REMOTE_APPEND && (

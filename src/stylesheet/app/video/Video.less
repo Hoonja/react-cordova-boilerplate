@@ -1,8 +1,29 @@
-.videophone-area {
-    background-color: #000000;
+.my-video-box-full {
+    position: absolute;
+    background-color: transparent;
+    height: 100vh;
+    width: 100vw;
+    z-index: -1;
 }
 
+.my-video-box-small {
+    position:fixed; top:40px; left:16px; width:78px; height:140px; border-radius:2px; overflow:hidden;
+}
+.my-video-box-small video {position:absolute; left:0; top:0; height:100%;}
+
+
+.peer-video-box {
+    position: absolute;
+    background-color: transparent;
+    height: 100vh;
+    width: 100vw;
+    z-index: -2;
+}
+
+
+
 .videophone-student-division {
+    background-color: transparent;
     position: absolute;
     top: 40px;
     width: 100%;
@@ -29,6 +50,7 @@
 }
 
 .videophone-camera-switch {
+    background-color: transparent;
     position: absolute;
     top: 50px;
     right: 10px;
@@ -47,6 +69,7 @@
     }
 }
 .videophone-button-division {
+    background-color: transparent;
     position: absolute;
     bottom: 40px;
     width: 100%;
@@ -83,37 +106,4 @@
             }
         }
     }
-}
-
-#vidSelf {
-    background-color: #000000;
-    transition: width 0.7s, height 0.7s, top 0.7s, left 0.7s;
-}
-
-.my-video{
-    position: absolute;
-    top: 50px;
-    left: 20px;
-    height: 20% !important;
-    width: 20%;
-}
-
-#divVidPeer {
-    video {
-        width: 100vw;
-        height: 100vh;
-    }
-}
-
-.video-loading {
-    width: 100%;
-}
-
-.video-loaded {
-    height: 100vh;
-}
-
-#vidbox {
-    width: 80vw;
-    height: 80vh;
 }

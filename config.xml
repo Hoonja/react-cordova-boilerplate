@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="com.danbiedu.wink.parent.ios" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <hook src="hooks/build.sh" type="before_prepare" />
-    <name>윙크 학부모 아이폰</name>
+    <name>윙크 영상통화</name>
     <description>
-        아이폰 용 윙크 학부모
+        윙크 영상통화
     </description>
     <author email="dev@cordova.apache.org" href="http://cordova.io">
         DanbiEduCorp.

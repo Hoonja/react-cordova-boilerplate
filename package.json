@@ -24,6 +24,7 @@
         "danbi-simplewebrtc": "^0.1.2",
         "fetch-jsonp": "^1.1.1",
         "history": "^4.7.2",
+        "list": "^2.0.10",
         "localforage": "^1.6.0",
         "moment": "^2.20.1",
         "onesignal-cordova-plugin": "^2.3.3",
@@ -65,7 +66,7 @@
         "babel-runtime": "6.23.0",
         "case-sensitive-paths-webpack-plugin": "2.0.0",
         "chai": "^3.5.0",
-        "chalk": "1.1.3",
+        "chalk": "^2.3.2",
         "connect-history-api-fallback": "1.3.0",
         "coveralls": "^2.13.0",
         "cross-spawn": "4.0.2",
@@ -172,7 +173,7 @@
     "theme": {
         "hd": "1px",
         "brand-primary": "#00bbd4",
-        "fill-body": "#ffffff"
+        "fill-body": "transparent"
     },
     "cordova": {
         "plugins": {

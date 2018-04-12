@@ -11,14 +11,22 @@ const authToken = '*danbi*';
 let actorId, currentRtc, roomName;
 
 const makeRTC = (socket, params = null) => {
-    const vidSelf = document.createElement('VIDEO');
-    vidSelf.autoplay = true;
-    vidSelf.volume = 0;
-    vidSelf.style.height = '80vh';
-    vidSelf.style.width = '80vw';
-    vidSelf.id = 'vidSelf';
-    vidSelf.className = 'video-loading';
-    this.vidSelf = vidSelf;
+    const myVideo = document.createElement('VIDEO');
+    myVideo.autoplay = true;
+    myVideo.volume = 0;
+    myVideo.style.zIndex = -1;
+    myVideo.style.width = '100%';
+    myVideo.style.height = '100%';
+    // myVideo.style.marginLeft = '10%';
+    // myVideo.style.marginRight = '10%';
+    myVideo.style.objectFit = 'cover';
+
+    // myVideo.style.height = 'auto';
+    // myVideo.style.width = 'auto';
+    myVideo.fullscreenElement = true;
+    myVideo.id = 'myVideo';
+    myVideo.className = 'my-video';
+    this.myVideo = myVideo;
 
     const connection = new SocketIOConnection(socket, { eventPrefix: 'rtc'});
 
@@ -30,17 +38,11 @@ const makeRTC = (socket, params = null) => {
         // peerVolumeWhenSpeaking: 0.75, // 의미없음
         // adjustPeerVolume: true, // 문제가 더 심각해짐
         // ...params,
-        localVideoEl: 'vidSelf',
+        localVideoEl: 'myVideo',
         // https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints
         media: {
             video: {
-                facingMode: {ideal: 'user'},
-                width: {ideal: 280 },
-                height: {ideal: 210 },
-                frameRate: {
-                    min: 1,
-                    max: 15
-                }
+                facingMode: {exact: 'user'}
             },
             audio: {
                 ...values.mediaConfig.audio,
@@ -51,53 +53,26 @@ const makeRTC = (socket, params = null) => {
 };
 
 const onLocalStream = () => {
-    const myVidbox = document.getElementById('vidbox');
-    console.log('onLocalStream: ', myVidbox, myVidbox.hasChildNodes());
+    const myVideoBox = document.getElementById('myVideoBox');
+    console.log('onLocalStream: ', myVideoBox, myVideoBox.hasChildNodes());
 
-    this.vidSelf.className = "video-loaded";
-    myVidbox.appendChild(this.vidSelf);
+    myVideoBox.className = "my-video-box-full";
+    myVideoBox.appendChild(this.myVideo);
 
     if (window.cordova && window.cordova.plugins && window.cordova.plugins.iosrtc) {
-        console.log('refreshVideos()');
         window.cordova.plugins.iosrtc.refreshVideos();
     } else {
-        console.log('vidSelf.play()');
-        this.vidSelf.play();
+        this.myVideo.play();
     }
-};
-
-const stopVibrate = () => {
-    if(navigator.vibrate) {
-        navigator.vibrate(0);
-    }
-};
-const appendRemoteVideo = (video, peer) => {
-    var vids = document.getElementById('divVidPeer');
-    stopVibrate();
-    // this.onStartTimer();
-
-    video.height = '100%';
-    video.poster = 'https://s.wink.co.kr/images/parent/video_poster_parent_student.png';
-    video.style.backgroundColor = 'black';
-
-    vids.appendChild(video);
-
-    var vidSelf = document.getElementById('vidSelf');
-    vidSelf.style.zIndex = 100;
-    setTimeout(() => {
-        vidSelf.className = 'my-video';
-    }, 100);
 };
 
 const eventsWithDispatch = (rtc, emit, dispatch, isReconnect) => {
     rtc.on('localStream', (stream) => {
-        console.log('[eventsWithDispatch]: localStream');
         // Notice: 화상 교육 화면에서 처음 message 호출하면 오류 발생 antd 2.13.4 기준)
         dispatch(creator.localStream(stream));
         onLocalStream();
     });
     rtc.on('readyToCall', () => {
-        console.log('[eventsWithDispatch]: readyToCall');
         emit('usePlugin', {id: 'rtc'});
         // 재연결 관련 로직 추가
         if(isReconnect && roomName) {
@@ -106,14 +81,11 @@ const eventsWithDispatch = (rtc, emit, dispatch, isReconnect) => {
     });
 
     rtc.on('videoAdded', (video, peer) => {
-        console.log('[eventsWithDispatch]: videoAdded');
         dispatch(creator.appendRemote(video, peer));
-        appendRemoteVideo(video, peer);
         roomName = rtc.roomName;
     });
 
     rtc.on('videoRemoved', (video, peer) => {
-        console.log('[eventsWithDispatch]: videoRemoved');
         dispatch(creator.removeRemote(video, peer));
         roomName = undefined;
     });
@@ -152,8 +124,6 @@ const initialize = (socket, emit, dispatch, isReconnect, resource) => {
     emit('login', {authToken, actorId});
 
     const rtc = makeRTC(socket, resource);
-
-    // rtc.webrtc.config.peerConnectionConfig.iceTransports = 'relay';
 
     dispatch(creator.initRTC(rtc, resource));
 
