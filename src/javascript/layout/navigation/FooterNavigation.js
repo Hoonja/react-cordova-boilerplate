@@ -1,3 +1,5 @@
+/* global appAvailability */
+
 import React from 'react';
 import logo from '../../../resource/logo.png';
 import icon from '../../../resource/icon.png';
@@ -35,13 +37,30 @@ class FooterNavigation extends React.Component {
         window.location.href = 'applinks:launchapp.wink.co.kr';
     }
 
+    openParentApp() {
+        var parentApp = 'fb1';
+        console.log('openApp', parentApp);
+
+        appAvailability.check(
+            parentApp + '://',
+            () => {
+                console.log('exists');
+                window.open('fb1://', '_system');
+            },
+            () => {
+                console.log('no');
+                window.location.href = 'https://itunes.apple.com/kr/app/%EC%9C%99%ED%81%AC-%ED%95%99%EB%B6%80%EB%AA%A8/id1294082776?mt=8';
+            }
+        )
+    }
+
     renderTab(tab){
         switch(tab.id){
             case '100000000':
                 return (
-                    <a href={tab.link} target="_new" className="navigation-menu">
-                      <CustomIcon type={tab.type} className="custom-icon" /> 윙크 학부모앱
-                    </a>
+                    <div className="navigation-menu" onClick={() => this.openParentApp()}>
+                        <CustomIcon type={tab.type} className="custom-icon" /> 윙크 학부모앱
+                    </div>
                 );
             case '300000000':
                 return (

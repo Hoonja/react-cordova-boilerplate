@@ -128,7 +128,7 @@ class Login extends React.Component {
         return (
             <div className="login-container">
                 <Flex direction="column" className="login-wrapper">
-                    <Flex.Item className="login-top-item">
+                    <Flex.Item className="login-top-item" style={{paddingTop: 'max(12px, env(safe-area-inset-top))'}}>
                         <Flex direction="column" className="login-top-contents">
                             <Flex.Item className="login-top-contents-logo">
                                 <img src={logo} alt="logo" className="logo"/>

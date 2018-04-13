@@ -36,14 +36,16 @@ export const callStatus = {
     RECEIVED: 'received',
     CONNECT: 'connect',
     DISCONNECT: 'disconnect',
-    CLOSE: 'close'
+    CLOSE: 'close',
+    ACCEPT: 'accept',
 };
 export const status = {
     REQUEST: 'request',
     RECEIVED: 'received',
     CONNECT: 'connect',
     DISCONNECT: 'disconnect',
-    CLOSE: 'close'
+    CLOSE: 'close',
+    ACCEPT: 'accept'
 };
 
 export const type = {

@@ -22,20 +22,28 @@
     <platform name="ios">
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
-        <icon height="180" src="src/resource/ios/Icon-60@3x.png" width="180" />
-        <icon height="120" src="src/resource/ios/Icon-60@2x.png" width="120" />
-        <icon height="76" src="src/resource/ios/Icon-76.png" width="76" />
-        <icon height="152" src="src/resource/ios/Icon-76@2x.png" width="152" />
-        <icon height="40" src="src/resource/ios/Icon-40.png" width="40" />
-        <icon height="80" src="src/resource/ios/Icon-40@2x.png" width="80" />
-        <icon height="57" src="src/resource/ios/Icon.png" width="57" />
-        <icon height="114" src="src/resource/ios/Icon@2x.png" width="114" />
-        <icon height="72" src="src/resource/ios/Icon-72.png" width="72" />
-        <icon height="144" src="src/resource/ios/Icon-72@2x.png" width="144" />
-        <icon height="29" src="src/resource/ios/Icon-Small.png" width="29" />
-        <icon height="58" src="src/resource/ios/Icon-Small@2x.png" width="58" />
-        <icon height="50" src="src/resource/ios/Icon-Small-50.png" width="50" />
-        <icon height="100" src="src/resource/ios/Icon-Small-50@2x.png" width="100" />
+        <icon height="180" src="src/resource/icon/ios/Icon-60@3x.png" width="180" />
+        <icon height="120" src="src/resource/icon/ios/Icon-60@2x.png" width="120" />
+        <icon height="76" src="src/resource/icon/ios/Icon-76.png" width="76" />
+        <icon height="152" src="src/resource/icon/ios/Icon-76@2x.png" width="152" />
+        <icon height="40" src="src/resource/icon/ios/Icon-40.png" width="40" />
+        <icon height="80" src="src/resource/icon/ios/Icon-40@2x.png" width="80" />
+        <icon height="57" src="src/resource/icon/ios/Icon.png" width="57" />
+        <icon height="114" src="src/resource/icon/ios/Icon@2x.png" width="114" />
+        <icon height="72" src="src/resource/icon/ios/Icon-72.png" width="72" />
+        <icon height="144" src="src/resource/icon/ios/Icon-72@2x.png" width="144" />
+        <icon height="29" src="src/resource/icon/ios/Icon-Small.png" width="29" />
+        <icon height="58" src="src/resource/icon/ios/Icon-Small@2x.png" width="58" />
+        <icon height="50" src="src/resource/icon/ios/Icon-Small-50.png" width="50" />
+        <icon height="100" src="src/resource/icon/ios/Icon-Small-50@2x.png" width="100" />
+        <splash src="src/resource/screen/ios/Default@2x~iphone~anyany.png" />
+        <splash src="src/resource/screen/ios/Default@2x~iphone~comany.png" />
+        <splash src="src/resource/screen/ios/Default@2x~iphone~comcom.png" />
+        <splash src="src/resource/screen/ios/Default@3x~iphone~anyany.png" />
+        <splash src="src/resource/screen/ios/Default@3x~iphone~anycom.png" />
+        <splash src="src/resource/screen/ios/Default@3x~iphone~comany.png" />
+        <splash src="src/resource/screen/ios/Default@2x~ipad~anyany.png" />
+        <splash src="src/resource/screen/ios/Default@2x~ipad~comany.png" />
         <hook src="hooks/iosrtc-swift-support.js" type="after_platform_add" />
         <config-file parent="NSCameraUsageDescription" target="*-Info.plist">
             <string>Blink uses your camera to make video calls.</string>
@@ -54,6 +62,14 @@
     <plugin name="cordova-plugin-vibration" spec="~3.0.1" />
     <plugin name="cordova-plugin-app-version" spec="~0.1.9" />
     <plugin name="cordova-plugin-iosrtc" spec="^4.0.2" />
+    <plugin name="cordova-plugin-splashscreen" spec="^5.0.2" />
+    <plugin name="cordova-plugin-customurlscheme" spec="^4.3.0">
+        <variable name="URL_SCHEME" value="parentvideoapp" />
+        <variable name="ANDROID_SCHEME" value=" " />
+        <variable name="ANDROID_HOST" value=" " />
+        <variable name="ANDROID_PATHPREFIX" value="/" />
+    </plugin>
+    <plugin name="cordova-plugin-appavailability" spec="^0.4.2" />
     <engine name="android" spec="^7.0.0" />
     <engine name="ios" spec="^4.5.4" />
 </widget>

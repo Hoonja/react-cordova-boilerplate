@@ -17,7 +17,10 @@
         "cordova-ios": "^4.5.4",
         "cordova-plugin-android-permissions": "^1.0.0",
         "cordova-plugin-app-version": "~0.1.9",
+        "cordova-plugin-appavailability": "^0.4.2",
+        "cordova-plugin-customurlscheme": "^4.3.0",
         "cordova-plugin-iosrtc": "^4.0.2",
+        "cordova-plugin-splashscreen": "^5.0.2",
         "cordova-plugin-vibration": "~3.0.1",
         "cordova-plugin-whitelist": "1",
         "danbi-msgclient": "^0.1.2",
@@ -182,7 +185,15 @@
             "cordova-plugin-whitelist": {},
             "cordova-plugin-vibration": {},
             "cordova-plugin-app-version": {},
-            "cordova-plugin-iosrtc": {}
+            "cordova-plugin-iosrtc": {},
+            "cordova-plugin-splashscreen": {},
+            "cordova-plugin-customurlscheme": {
+                "URL_SCHEME": "parentvideoapp",
+                "ANDROID_SCHEME": " ",
+                "ANDROID_HOST": " ",
+                "ANDROID_PATHPREFIX": "/"
+            },
+            "cordova-plugin-appavailability": {}
         },
         "platforms": [
             "android",

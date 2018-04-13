@@ -43,7 +43,7 @@ class SettingContainer extends React.Component {
     render() {
         return (
             <div>
-                <Flex direction="column" className="setting-wrapper">
+                <Flex direction="column" className="setting-wrapper" style={{paddingTop: 'max(12px, env(safe-area-inset-top))'}}>
                     <Flex.Item className="setting-navbar">
                         <NavBar
                             mode="dark"

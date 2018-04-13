@@ -415,13 +415,13 @@ export const changeSketcherWithoutAck = (cmd, data) => {
     }
 };
 
-const connectVideoCall = (dispatch, socket, user, student, useRelay) => {
+const connectVideoCall = (dispatch, socket, user, student, useRelay, subType) => {
     const baseMessage = getBaseMessage(user, student);
+    console.log('connectVideoCall', student);
     return joinRoom(socket.rtc, baseMessage.roomId)
       .then(() => {
           const message = {
-              type: values.type.CALL, subtype: values.subtype.CONNECT,
-              classInfo: {name: '', subjects: [user.subjectTagName], profileImg: ''},
+              type: values.type.CALL, subtype: subType || values.subtype.CONNECT,
               ...baseMessage
           };
           if(useRelay) {
@@ -445,20 +445,20 @@ const disconnectVideoCall = (dispatch, socket, user, student) => {
 
     leaveRoom(socket.rtc);
 };
-export const updateVideoCallConnectStatus = (status, student, useRelay) => {
+export const updateVideoCallConnectStatus = (status, student, useRelay, subType) => {
     return (dispatch, getState) => {
         const {security, socket} = getState();
         const user = getUser(security);
 
         dispatch(creator.rtcConnectStatus(status));
 
-        if(status === values.status.CONNECT && student) {
+        if(status === values.callStatus.CONNECT && student) {
             // NOTICE: 불안정 접속 방지 위함
             // disconnectVideoCall(dispatch, socket, user, student);
-            connectVideoCall(dispatch, socket, user, student, useRelay);
-        } else if(status === values.status.DISCONNECT && student) {
+            connectVideoCall(dispatch, socket, user, student, useRelay, subType);
+        } else if(status === values.callStatus.DISCONNECT && student) {
             disconnectVideoCall(dispatch, socket, user, student);
-        } else if(status === values.status.CLOSE) {
+        } else if(status === values.callStatus.CLOSE) {
             console.log('close lesson room');
         }
     }

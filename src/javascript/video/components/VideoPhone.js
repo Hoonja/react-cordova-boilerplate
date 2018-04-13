@@ -31,7 +31,7 @@ const mapStateToProps = ({ fetch, security, socket }) => {
 const mapDispatchProps = dispatch => ({
     update: (url, params) => dispatch(fetch.update(url, params)),
     simpleUpdate: (url, params) => dispatch(fetch.simpleUpdate(url, params)),
-    updateStatus: (status, student, useRelay) => dispatch(action.updateVideoCallConnectStatus(status, student, useRelay)),
+    updateStatus: (status, student, useRelay, subType) => dispatch(action.updateVideoCallConnectStatus(status, student, useRelay, subType)),
     emit: (params) => dispatch(action.emitTalk(params)),
     reset: () => dispatch(fetch.reset()),
 
@@ -136,11 +136,11 @@ class VideoPhone extends Component {
         this.connect();
     }
 
-    connectRoom() {
+    connectRoom(subType) {
         const {student} = this.props.data;
 
         setTimeout(() => {
-            this.props.updateStatus(values.callStatus.CONNECT, student.id, false );
+            this.props.updateStatus(values.callStatus.CONNECT, student.id, false, subType );
         }, 300);
     }
 
@@ -161,7 +161,7 @@ class VideoPhone extends Component {
         this.facingMode = true;
 
         if(callStatus === values.callStatus.REQUEST) {
-            this.connectRoom();
+            this.connectRoom(values.subtype.CONNECT);
             this.setTalk('create');
         } else if(callStatus === values.callStatus.RECEIVED) {
             this.startVibrate();
@@ -407,7 +407,7 @@ class VideoPhone extends Component {
                             거절</Button>
                     </Flex.Item>
                     <Flex.Item className="videophone-button">
-                        <Button type="primary" size="large" onClick={e => this.connectRoom(e)}>
+                        <Button type="primary" size="large" onClick={() => this.connectRoom(values.subtype.ACCEPT)}>
                             <CustomIcon type="MdPhone"/>
                             통화</Button>
                     </Flex.Item>
