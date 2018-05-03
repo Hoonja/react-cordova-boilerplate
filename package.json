@@ -19,7 +19,9 @@
         "cordova-plugin-app-version": "~0.1.9",
         "cordova-plugin-appavailability": "^0.4.2",
         "cordova-plugin-customurlscheme": "^4.3.0",
+        "cordova-plugin-inappbrowser": "^3.0.0",
         "cordova-plugin-iosrtc": "^4.0.2",
+        "cordova-plugin-market": "^1.2.0",
         "cordova-plugin-splashscreen": "^5.0.2",
         "cordova-plugin-vibration": "~3.0.1",
         "cordova-plugin-whitelist": "1",
@@ -193,7 +195,9 @@
                 "ANDROID_HOST": " ",
                 "ANDROID_PATHPREFIX": "/"
             },
-            "cordova-plugin-appavailability": {}
+            "cordova-plugin-appavailability": {},
+            "cordova-plugin-market": {},
+            "cordova-plugin-inappbrowser": {}
         },
         "platforms": [
             "android",

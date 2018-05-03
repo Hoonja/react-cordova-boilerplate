@@ -2,7 +2,6 @@
 
 import React from 'react';
 import logo from '../../../resource/logo.png';
-import icon from '../../../resource/icon.png';
 import { NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
 
@@ -13,7 +12,7 @@ import { service } from '../../commons/configs';
 import { CustomIcon } from '../../commons/components';
 
 
-const mapStateToProps = ({fetch, layout, router}) => {
+const mapStateToProps = ({fetch, layout}) => {
 
     const menu = service.getValue(layout, 'footerList')
     .filter(item => item.level === 0);
@@ -38,18 +37,24 @@ class FooterNavigation extends React.Component {
     }
 
     openParentApp() {
-        var parentApp = 'fb1';
-        console.log('openApp', parentApp);
+        var parentApp = 'winkparentapp';
+        window.open = window.cordova.InAppBrowser.open;
 
         appAvailability.check(
             parentApp + '://',
             () => {
-                console.log('exists');
-                window.open('fb1://', '_system');
+                window.open('winkparentapp://go/to/path?param1=12&param2=34', '_system');
             },
             () => {
-                console.log('no');
-                window.location.href = 'https://itunes.apple.com/kr/app/%EC%9C%99%ED%81%AC-%ED%95%99%EB%B6%80%EB%AA%A8/id1294082776?mt=8';
+                window.cordova.plugins.market.open('id1294082776', {
+                    success: function () {
+                        console.log('margek open success');
+                    },
+                    error: function () {
+                        console.log('margek open error');
+                    }
+                })
+                // window.location.href = 'https://itunes.apple.com/kr/app/%EC%9C%99%ED%81%AC-%ED%95%99%EB%B6%80%EB%AA%A8/id1294082776?mt=8';
             }
         )
     }

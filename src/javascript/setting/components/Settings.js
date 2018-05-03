@@ -5,7 +5,7 @@ import {push} from 'react-router-redux';
 import {values} from '../../commons/configs';
 import { fetch, security as action } from '../../redux/actions';
 
-import { Flex, Button, List, Card, Switch, Modal } from 'antd-mobile';
+import { Flex, Button, List, Switch, Modal } from 'antd-mobile';
 import {SecurityService, SessionService} from '../../mobileCommons/security/services';
 
 import { getCurrentAppVersion } from '../../lib/utils';
@@ -138,9 +138,9 @@ class Settings extends React.Component {
                     <Flex.Item>
                         {this.renderLoginSetting()}
                     </Flex.Item>
-                    <Flex.Item>
-                        {this.renderPushSetting()}
-                    </Flex.Item>
+                    {/*<Flex.Item>*/}
+                        {/*{this.renderPushSetting()}*/}
+                    {/*</Flex.Item>*/}
                     {/*<Flex.Item>*/}
                         {/*{this.renderVersionInfo()}*/}
                     {/*</Flex.Item>*/}

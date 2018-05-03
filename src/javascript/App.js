@@ -59,7 +59,7 @@ class App extends React.Component {
                     pushIdsIos
                 }
             };
-            const obj = api.modifyActor(service.getValue(parent, 'actor.id'), params);
+            const obj = api.modifyActor(service.getValue(parent, 'id'), params);
             return APICaller.post(obj.url, obj.params);
         }
     }
@@ -107,6 +107,9 @@ class App extends React.Component {
             // 		title: '대제목'
             // 	}
             // }
+            // 영상통화 수신 기능 제거
+            return ;
+
             const additionalData = service.getValue(data, 'payload.additionalData', {});
             if(additionalData.type === 'CALL') {
                 const {parent} = this.props;

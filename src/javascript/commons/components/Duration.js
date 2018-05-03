@@ -59,9 +59,7 @@ class Duration extends Component {
 
         return (
             <span className={className}>
-                <em>
-                    {moment(this.state.duration).format(format)}
-                </em>
+                {moment(this.state.duration).format(format)}
             </span>
         );
     }
