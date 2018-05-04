@@ -17,6 +17,4 @@ package-lock.json
 # app
 /platforms
 /plugins
-
-# client_build
-client_build/
+/www

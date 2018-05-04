@@ -21,12 +21,6 @@ export const modal = {
 export const rtcStatus = {
     REMOTE_APPEND: 'remoteAppend',
     REMOTE_REMOVE: 'remoteRemove',
-    CALL_WAIT: 'wait',
-    CALLING: 'calling',
-    CALL_END: 'called',
-    CALL_CANCEL: 'cancel',
-    CALL_FAIL: 'fail',
-    CALL_REJECT: 'reject',
     MODE_ACTIVE: 'active',
     LOCAL_STREAM: 'localStream'
 };
@@ -38,6 +32,12 @@ export const callStatus = {
     DISCONNECT: 'disconnect',
     CLOSE: 'close',
     ACCEPT: 'accept',
+    CALL_WAIT: 'wait',
+    CALLING: 'calling',
+    CALL_END: 'called',
+    CALL_CANCEL: 'cancel',
+    CALL_FAIL: 'fail',
+    CALL_REJECT: 'reject',
 };
 export const status = {
     REQUEST: 'request',

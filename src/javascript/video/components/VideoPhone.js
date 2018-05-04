@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import moment from 'moment';
 import {connect} from 'react-redux';
 import studentM from '../../../resource/student_m.png';
 import studentW from '../../../resource/student_w.png';
@@ -71,14 +70,18 @@ class VideoPhone extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        const {remote, rtcStatus} = this.props;
+        const {remote, rtcStatus, callStatus} = this.props;
         const keys = Object.keys(remote);
         if(prevProps.rtcStatus !== rtcStatus) {
             if(rtcStatus === values.rtcStatus.REMOTE_APPEND) {
                 this.appendRemoteVideo(remote[keys[0]]);
             } else if(rtcStatus === values.rtcStatus.REMOTE_REMOVE) {
-                console.log('did update: remote remove');
-                this.disconnect(values.rtcStatus.CALL_END);
+                this.disconnect(values.callStatus.CALL_END);
+            }
+        }
+        if(prevProps.callStatus !== callStatus) {
+            if(callStatus === values.callStatus.CALL_END) {
+                this.endCall();
             }
         }
     }
@@ -102,30 +105,6 @@ class VideoPhone extends Component {
                 window.cordova.plugins.iosrtc.refreshVideos();
             }
         }, 300);
-    }
-    //
-    // onLocalStream() {
-    //     console.log('videophone: onlocalstream()');
-    //     var vidSelf = service.getValue(this.props, 'resource.vidSelf', '');
-    //     const myVidbox = document.getElementById('videophone-area');
-    //
-    //     // vidSelf.className = "video-loaded";
-    //     myVidbox.appendChild(vidSelf);
-    //
-    //     if (window.cordova && window.cordova.plugins && window.cordova.plugins.iosrtc) {
-    //         window.cordova.plugins.iosrtc.refreshVideos();
-    //     } else {
-    //         vidSelf.play();
-    //     }
-    // }
-    componentWillUnmount() {
-        // if (this.props.rtc) {
-        //     unbindHandlers(this.rtc, this.rtcHandlers);
-        //     this.rtcHandlers = null;
-        //
-        //     this.rtc.dispose();
-        //     this.rtc = null;
-        // }
     }
 
     onDeviceReady() {
@@ -290,12 +269,12 @@ class VideoPhone extends Component {
                 return ;
             }
             switch (state) {
-                case values.rtcStatus.CALL_END:
+                case values.callStatus.CALL_END:
                     this.completeVideoTalk(state);
                     break;
-                case values.rtcStatus.CALL_CANCEL:
-                case values.rtcStatus.CALL_FAIL:
-                case values.rtcStatus.CALL_REJECT:
+                case values.callStatus.CALL_CANCEL:
+                case values.callStatus.CALL_FAIL:
+                case values.callStatus.CALL_REJECT:
                     this.failVideoTalk(state);
                     break;
                 default:
@@ -309,11 +288,21 @@ class VideoPhone extends Component {
         return (Object.keys(remote).length > 0);
     }
 
+    endCall() {
+        const {student} = this.props.data;
+        setTimeout(() => {
+            this.props.updateStatus(values.callStatus.DISCONNECT, student.id, false );
+            this.props.onClose();
+        }, 1500);
+    }
+
     renderCallStatus() {
         const { callStatus, rtcStatus } = this.props;
 
-        if(rtcStatus === values.rtcStatus.REMOTE_APPEND) {
-            return (<Duration format={'mm:ss'} on={this.getTimerStatus()} setDuration={this.setDuration.bind(this)}/>);
+        if (callStatus === values.callStatus.CALL_END) {
+            return '통화를 종료합니다.';
+        } else if(rtcStatus === values.rtcStatus.REMOTE_APPEND) {
+            return (<Duration format={'mm:ss'} on={this.getTimerStatus()} setDuration={this.setDuration.bind(this)} />);
         } else if (callStatus === values.callStatus.REQUEST) {
             return '연결중입니다.';
         } else if (callStatus === values.callStatus.RECEIVED) {
@@ -388,7 +377,7 @@ class VideoPhone extends Component {
                         <CustomIcon type={audioOn ? "MdMicOff" : "MdMic"} onClick={e => this.toggleAudio(e)}/>
                     </Flex.Item>
                     <Flex.Item className="videophone-button">
-                        <Button type="warning" size="large" onClick={e => this.disconnect(values.rtcStatus.CALL_END)}>
+                        <Button type="warning" size="large" onClick={e => this.disconnect(values.callStatus.CALL_END)}>
                             <CustomIcon type="MdCallEnd"/>
                             종료</Button>
                     </Flex.Item>
@@ -402,7 +391,7 @@ class VideoPhone extends Component {
                 <Flex className="button-list" justify="center">
                     <Flex.Item className="videophone-button">
                         <Button type="warning" size="large"
-                                onClick={() => this.disconnect(values.rtcStatus.CALL_REJECT)}>
+                                onClick={() => this.disconnect(values.callStatus.CALL_REJECT)}>
                             <CustomIcon type="MdDoNotDisturb"/>
                             거절</Button>
                     </Flex.Item>
@@ -417,7 +406,7 @@ class VideoPhone extends Component {
             return (
                 <Flex className="button-list" justify="center">
                     <Flex.Item className="videophone-button">
-                        <Button type="warning" size="large" onClick={() => this.disconnect(values.rtcStatus.CALL_CANCEL)}>
+                        <Button type="warning" size="large" onClick={() => this.disconnect(values.callStatus.CALL_CANCEL)}>
                             <CustomIcon type="MdCallEnd"/>
                             종료</Button>
                     </Flex.Item>

@@ -1,6 +1,18 @@
 import React, { Component } from 'react';
 import moment from 'moment';
+import {connect} from "react-redux";
+import {socket as action} from "../../redux/actions";
+import {service, values} from "../configs";
 
+const mapStateToProps = ({ socket }) => {
+    return {
+        remote: socket.remote,
+    }
+};
+const mapDispatchProps = dispatch => ({
+    updateStatus: (status) => dispatch(action.updateVideoCallStatus(status)),
+
+});
 class Duration extends Component {
     constructor(props){
         super(props);
@@ -36,7 +48,16 @@ class Duration extends Component {
             this.setState({
                 duration: moment().diff(startTime)
             });
-            this.run();
+            setTimeout(() => {
+                const keys = Object.keys(this.props.remote);
+                const iceConnectionState = service.getValue(this.props.remote[keys[0]], 'peer.pc.pc.iceConnectionState', '');
+                if(iceConnectionState === 'disconnected') {
+                    this.props.updateStatus(values.callStatus.CALL_END);
+                } else {
+                    this.run();
+                }
+            }, 1000);
+
         });
     }
 
@@ -51,6 +72,7 @@ class Duration extends Component {
         if(this.animationId) {
             cancelAnimationFrame(this.animationId);
             this.props.setDuration(this.state.duration);
+            this.run = null;
         }
     }
 
@@ -65,4 +87,4 @@ class Duration extends Component {
     }
 }
 
-export default Duration;
+export default connect(mapStateToProps, mapDispatchProps)(Duration);;

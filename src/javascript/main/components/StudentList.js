@@ -9,7 +9,7 @@ import { fetch, socket as action } from '../../redux/actions';
 import { path, values } from '../../commons/configs';
 import { push } from 'react-router-redux';
 
-import { Button, List, Modal } from 'antd-mobile';
+import { List, Modal } from 'antd-mobile';
 import { APICaller } from '../../mobileCommons/api';
 
 const Item = List.Item;
@@ -64,6 +64,7 @@ class StudentList extends React.Component {
         // return APICaller.get(obj.url, obj.params)
             .then(() => {
                 const {room} = this.props;
+                console.log('call ', room);
                 if(room.id) {
                     this.props.updateVideoCallStatus(values.callStatus.REQUEST, {});
                     this.props.move(path.video);

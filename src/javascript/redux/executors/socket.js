@@ -45,8 +45,6 @@ const makeRTC = (socket, params = null) => {
                 facingMode: {exact: 'user'}
             },
             audio: {
-                ...values.mediaConfig.audio,
-                ...values.audioConfig.default,
             }
         },
     });

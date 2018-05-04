@@ -18,8 +18,8 @@
         console.info('agent info: ' + uagentLow);
 
         if (~uagentLow.indexOf('iphone') || (~uagentLow.indexOf('android') && ~uagentLow.indexOf('wv'))) {
-            window.wink_cordova_env = 'staging';
-            // window.wink_cordova_env = 'production';
+            // window.wink_cordova_env = 'staging';
+            window.wink_cordova_env = 'production';
             window.wink_cordova_dev_host = 'http://server.local.danbi';
 
             // var scriptTag = document.createElement('script');
@@ -62,6 +62,7 @@
     }
     init();
 </script>
-<!-- <script type="text/javascript" src="/static/js/main.js"></script></body> -->
+<!--<script type="text/javascript" src="/static/js/main.js"></script>-->
+</body>
 
 </html>
