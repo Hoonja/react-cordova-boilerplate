@@ -1,8 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import imgMenu from '../../../resource/menu.svg';
-import imgUser from '../../../resource/user.svg';
 import imgLogo from '../../../resource/logo.png';
 
 import { fetch } from '../../redux/actions/index';
@@ -42,13 +40,13 @@ class HeaderContainer extends React.Component {
 
     getLeftContent(){
         return [
-            <CustomIcon type={imgMenu} key="0" className="am-icon-left" />
+            <CustomIcon type={imgLogo} key="0" className="am-icon-left" />
         ];
     }
 
     getRightContent(){
         return [
-            <CustomIcon type={imgUser} key="0" className="am-icon-right"  onClick={this.onOpenChange.bind(this, 'mypage')}/>
+            <CustomIcon type={imgLogo} key="0" className="am-icon-right"  onClick={this.onOpenChange.bind(this, 'mypage')}/>
         ]
     }
 

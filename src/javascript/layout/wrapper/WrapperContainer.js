@@ -6,7 +6,7 @@ import { path } from '../../commons/configs';
 import { Page404 } from '../error';
 
 import { Main, Setting} from '../../routes';
-import {VideoContainer, VideoContainer2} from '../../video/components/';
+import {VideoContainer} from '../../video/components/';
 
 class WrapperContainer extends React.Component {
 
@@ -18,7 +18,6 @@ class WrapperContainer extends React.Component {
                 }} />
                 <Route path={path.main} component={Main}/>
                 <Route path={path.video} component={VideoContainer}/>
-                <Route path={path.video2} component={VideoContainer2}/>
                 <Route path={path.setting} component={Setting}/>
                 <Route component={Page404}/>
             </Switch>

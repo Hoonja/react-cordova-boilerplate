@@ -1,19 +1,22 @@
 import React from 'react';
 
 import { StickyContainer } from 'react-sticky';
-import { APICaller } from 'wink_mobile_commons/dist/api';
+import { APICaller } from './mobileCommons/api';
 
-import {api, service, values} from './commons/configs';
+import {api, path, service, values} from './commons/configs';
 import { WrapperContainer } from './layout';
 
 import Push from './lib/Push';
 import {PLATFORM, getPlatformName} from './lib/utils';
+import {requestPermissions} from './lib/permissions';
 import { connect } from 'react-redux';
 
-import {socket as socketAction} from './redux/actions';
+import {fetch, socket as action, socket as socketAction} from './redux/actions';
+import {push} from "react-router-redux";
 
-const mapStateToProps = ({ security }) => ({
-    parent : security
+const mapStateToProps = ({ security, fetch }) => ({
+    parent : security.actor,
+    room: service.getValue(fetch, 'multipleList.room', {}),
 });
 
 const mapDispatchProps = dispatch => ({
@@ -22,7 +25,10 @@ const mapDispatchProps = dispatch => ({
     },
     worker: (worker) => {
         return dispatch(socketAction.initWorker(worker));
-    }
+    },
+    move: (location) => dispatch(push(location)),
+    updateVideoCallStatus: (callStatus) => dispatch(action.updateVideoCallStatus(callStatus)),
+    multipleList: (list) => dispatch(fetch.multipleList(list)),
 });
 
 class App extends React.Component {
@@ -53,13 +59,16 @@ class App extends React.Component {
                     pushIdsIos
                 }
             };
-            const obj = api.modifyActor(service.getValue(parent, 'actor.id'), params);
+            const obj = api.modifyActor(service.getValue(parent, 'id'), params);
             return APICaller.post(obj.url, obj.params);
         }
     }
 
     onDeviceReady() {
-        if(window.plugins && window.plugins.OneSignal) {
+        if (window.cordova.platformId === 'ios') {
+            window.cordova.plugins.iosrtc.registerGlobals();
+        }
+        if(window.plugins && window.plugins.OneSignal && window.cordova.platformId === 'ios') {
             Push.init(
                 (pushIds) => {
                     this.onPushIds(pushIds);
@@ -69,6 +78,7 @@ class App extends React.Component {
                 }
             );
         }
+        // requestPermissions();
     }
 
     // 푸시 아이디를 스토리지에 저장한다. (나중에 이용자가 로그인 할 때, 이것을 읽어서 actor 정보에 저장하도록 한다.)
@@ -79,41 +89,27 @@ class App extends React.Component {
 
     // 푸시 메세지 수신 시 처리한다.
     onPushNotify = (data) => {
-        console.log('[PushContainer] onPushNotify', data);
-        if (data.handleType === 'opened') {
-            // data.notification = {
-            // 	displayType: 0,
-            // 	payload: {
-            // 		additionalData: {
-            // 			type: MSG_TYPE.call,
-            // 			subtype: MSG_SUBTYPE.request,
-            // 			fromName: this.actorName,
-            // 			fromActorId: this.actorId,
-            // 			roomId,
-            // 			time: Date.now()
-            // 		},
-            // 		body: '바뀐 메세지 형식으로 보냄',
-            // 		lockScreenVisibility: 1,
-            // 		title: '대제목'
-            // 	}
-            // }
-            if (data.notification && data.notification.payload && data.notification.payload.additionalData) {
-                const additionalData = data.notification.payload.additionalData;
-                if (additionalData.type === 'CALL') {
-                    if (Date.now() > additionalData.time + 35000) {
-                        return setTimeout(() => {
-                            console.log('통화 대기시간을 초과하여 통화 연결이 종료 되었습니다');
-                        }, 3000);
-                    } else {
-                        if (!this.props.rnsLogined) {
-                            this.props.pushPendingRequest(additionalData);
+        console.log('push:;, ', data);
+        if (data.handleType === 'received') {
+            // 영상통화 수신 기능 제거
+            return ;
+
+            const additionalData = service.getValue(data, 'payload.additionalData', {});
+            if(additionalData.type === 'CALL') {
+                const {parent} = this.props;
+                const obj = api.getRoomId({name: `${parent.id}_${additionalData.fromActorId}`});
+                return this.props.multipleList([{id:'room', url :obj.url, params : obj.params }])
+                // return APICaller.get(obj.url, obj.params)
+                    .then(() => {
+                        const {room} = this.props;
+                        if(room.id) {
+                            this.props.updateVideoCallStatus(values.callStatus.RECEIVED);
+                            this.props.move(path.video);
                         } else {
-                            console.warn('[PushContainer] 영상 전화 요청 푸시를 받았으나, 이미 앱이 요청을 받았을 것이므로 별도의 처리는 안함');
+                            console.log('room이 없음');
+                            return ;
                         }
-                    }
-                } else {
-                    console.warn('[PushContainer] 영상 전화 요청이 아닌 기타 푸시 수신');
-                }
+                    });
             }
         }
     }

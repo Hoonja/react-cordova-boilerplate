@@ -9,8 +9,8 @@ import { fetch, socket as action } from '../../redux/actions';
 import { path, values } from '../../commons/configs';
 import { push } from 'react-router-redux';
 
-import { Button, List, Modal } from 'antd-mobile';
-import { APICaller } from 'wink_mobile_commons/dist/api';
+import { List, Modal } from 'antd-mobile';
+import { APICaller } from '../../mobileCommons/api';
 
 const Item = List.Item;
 
@@ -29,7 +29,7 @@ const mapDispatchToProps = (dispatch) => {
         get: (url, params) => dispatch(fetch.get(url, params)),
         multipleList: (list) => dispatch(fetch.multipleList(list)),
         move: (location) => dispatch(push(location)),
-        updateVideoCallState: (callState, item) => dispatch(action.updateVideoCallState(callState, item))
+        updateVideoCallStatus: (callStatus, item) => dispatch(action.updateVideoCallStatus(callStatus, item))
     }
 };
 
@@ -64,8 +64,9 @@ class StudentList extends React.Component {
         // return APICaller.get(obj.url, obj.params)
             .then(() => {
                 const {room} = this.props;
+                console.log('call ', room);
                 if(room.id) {
-                    this.props.updateVideoCallState(values.callState.REQUEST, {});
+                    this.props.updateVideoCallStatus(values.callStatus.REQUEST, {});
                     this.props.move(path.video);
                 } else {
                     console.log('room이 없음');
@@ -92,7 +93,7 @@ class StudentList extends React.Component {
             fromName: '정주어',
             fromActorId: '7293'
         };
-        this.props.updateVideoCallState(values.callState.RECEIVED, receiveInfo);
+        this.props.updateVideoCallStatus(values.callStatus.RECEIVED, receiveInfo);
         this.props.move(path.video);
     }
 

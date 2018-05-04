@@ -17,7 +17,7 @@ import * as reducers from './redux/reducers';
 import App from './App';
 // import registerServiceWorker from './registerServiceWorker';
 
-import {AuthRoute} from 'wink_mobile_commons/dist/security/components';
+import {AuthRoute} from './mobileCommons/security/components';
 
 import io from 'socket.io-client';
 import {socket as execute} from './redux/executors';
@@ -25,7 +25,7 @@ import {socket as createSocketIoMiddleware } from './redux/middlewares';
 
 import { Login, Page404, Page500 } from './layout';
 
-const history = createBrowserHistory({basename: '/browser/www'});
+const history = createBrowserHistory();
 
 const middleware = routerMiddleware(history);
 const loggerMiddleware = createLogger({

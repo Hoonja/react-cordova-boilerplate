@@ -18,24 +18,34 @@ export const modal = {
     // style:{ top: 20 }
 };
 
-export const callState = {
-    REQUEST: 'request',
-    RECEIVED: 'received',
+export const rtcStatus = {
     REMOTE_APPEND: 'remoteAppend',
     REMOTE_REMOVE: 'remoteRemove',
+    MODE_ACTIVE: 'active',
+    LOCAL_STREAM: 'localStream'
+};
+
+export const callStatus = {
+    REQUEST: 'request',
+    RECEIVED: 'received',
+    CONNECT: 'connect',
+    DISCONNECT: 'disconnect',
+    CLOSE: 'close',
+    ACCEPT: 'accept',
     CALL_WAIT: 'wait',
     CALLING: 'calling',
     CALL_END: 'called',
     CALL_CANCEL: 'cancel',
     CALL_FAIL: 'fail',
     CALL_REJECT: 'reject',
-    MODE_ACTIVE: 'active',
 };
-
 export const status = {
+    REQUEST: 'request',
+    RECEIVED: 'received',
     CONNECT: 'connect',
     DISCONNECT: 'disconnect',
-    CLOSE: 'close'
+    CLOSE: 'close',
+    ACCEPT: 'accept'
 };
 
 export const type = {
@@ -46,8 +56,8 @@ export const type = {
 
 export const subtype = {
     ACCEPT: 'ACCEPT',
-    CONNECT: 'REQUEST_C',
-    DISCONNECT: 'QUIT_C',
+    CONNECT: 'REQUEST',
+    DISCONNECT: 'QUIT',
     CAMERA: 'camera',
     POINT: 'point',
     SHARE: 'share',
@@ -213,8 +223,9 @@ export const realTimeTalkType = {
 export default {
     format,
     modal,
+    callStatus,
+    rtcStatus,
     status,
-    callState,
     type,
     subtype,
     cmd,

@@ -3,7 +3,7 @@ import logo from '../../resource/logo.png';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import { createForm } from 'rc-form';
-import { APICaller } from 'wink_mobile_commons/dist/api';
+import { APICaller } from '../mobileCommons/api';
 
 import { Flex, InputItem, Button, Tabs, Checkbox, List, WhiteSpace, Modal } from 'antd-mobile'
 
@@ -128,7 +128,7 @@ class Login extends React.Component {
         return (
             <div className="login-container">
                 <Flex direction="column" className="login-wrapper">
-                    <Flex.Item className="login-top-item">
+                    <Flex.Item className="login-top-item" style={{paddingTop: 'max(12px, env(safe-area-inset-top))'}}>
                         <Flex direction="column" className="login-top-contents">
                             <Flex.Item className="login-top-contents-logo">
                                 <img src={logo} alt="logo" className="logo"/>

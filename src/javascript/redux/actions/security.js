@@ -2,7 +2,7 @@ import axios from 'axios';
 
 import {security as creator}  from '../creators';
 import {fetch as fetchCreator}  from '../creators';
-import {SessionService, SecurityService} from 'wink_mobile_commons/dist/security/services';
+import {SessionService, SecurityService} from '../../mobileCommons/security/services';
 
 export const errorHandler = (dispatch) => {
 

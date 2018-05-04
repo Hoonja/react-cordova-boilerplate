@@ -14,7 +14,7 @@ REST API Key: ODIzZWU4YjYtMTM2Ni00MzIxLTkwYmMtMTk3NjIxN2Y4M2Ni
 */
 
 import {api} from '../commons/configs';
-import {APICaller} from 'wink_mobile_commons/dist/api';
+import {APICaller} from '../mobileCommons/api';
 
 const appID = '31911331-9227-4f27-a894-344305bc4dfc';
 

@@ -7,17 +7,25 @@ import * as MsgAction from './MsgAction';
 
 function getMsgServerUrl() {
     let url;
-    if (~location.host.indexOf('wink.co.kr')) {
-        // url = 'https://' + location.host + ':7070/users';
+    // if (~location.host.indexOf('wink.co.kr')) {
+    //     // url = 'https://' + location.host + ':7070/users';
+    //     url = 'https://msg.wink.co.kr/users';
+    // } else if (~location.host.indexOf('danbi.biz')) {
+    //     // url = 'https://' + location.host + ':7070/users';
+    //     url = 'https://msg.danbi.biz/users';
+    // } else {
+    //     url = 'http://127.0.0.1:27070/users';
+    //     // url = '//msg.local.danbi/users';
+    // }
+
+    if(window.wink_cordova_env === "production") {
         url = 'https://msg.wink.co.kr/users';
-    } else if (~location.host.indexOf('danbi.biz')) {
-        // url = 'https://' + location.host + ':7070/users';
+    } else if(window.wink_cordova_env === "staging") {
         url = 'https://msg.danbi.biz/users';
     } else {
-        url = 'http://127.0.0.1:27070/users';
-        // url = '//msg.local.danbi/users';
+        url = 'https://msg.danbi.biz/users';
     }
-
+    console.log('getMsgServerUrl: ', url);
     // url = 'https://msg.wink.co.kr/users';
     // url = 'https://msg.danbi.biz/users';
     return url;

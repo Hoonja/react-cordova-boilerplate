@@ -5,58 +5,85 @@ import {SocketIOConnection} from 'danbi-msgclient';
 import {Toast} from 'antd-mobile';
 import {socket as creator} from '../creators';
 import {socket as type} from '../types';
-import {values} from '../../commons/configs';
+import {service, values} from '../../commons/configs';
 
 const authToken = '*danbi*';
 let actorId, currentRtc, roomName;
 
 const makeRTC = (socket, params = null) => {
+    const myVideo = document.createElement('VIDEO');
+    myVideo.autoplay = true;
+    myVideo.volume = 0;
+    myVideo.style.zIndex = -1;
+    myVideo.style.width = '100%';
+    myVideo.style.height = '100%';
+    // myVideo.style.marginLeft = '10%';
+    // myVideo.style.marginRight = '10%';
+    myVideo.style.objectFit = 'cover';
+
+    // myVideo.style.height = 'auto';
+    // myVideo.style.width = 'auto';
+    myVideo.fullscreenElement = true;
+    myVideo.id = 'myVideo';
+    myVideo.className = 'my-video';
+    this.myVideo = myVideo;
+
     const connection = new SocketIOConnection(socket, { eventPrefix: 'rtc'});
+
+    console.log('makeRTC: ', params);
 
     return new SimpleWebRTC({
         connection,
         autoRequestMedia: true,
         // peerVolumeWhenSpeaking: 0.75, // 의미없음
         // adjustPeerVolume: true, // 문제가 더 심각해짐
-        ...params,
+        // ...params,
+        localVideoEl: 'myVideo',
         // https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints
         media: {
             video: {
-                facingMode: {ideal: 'user'},
-                width: {ideal: 280 },
-                height: {ideal: 210 }
+                facingMode: {exact: 'user'}
             },
             audio: {
-                ...values.mediaConfig.audio,
-                ...values.audioConfig.default,
             }
         },
     });
 };
 
+const onLocalStream = () => {
+    const myVideoBox = document.getElementById('myVideoBox');
+    console.log('onLocalStream: ', myVideoBox, myVideoBox.hasChildNodes());
+
+    myVideoBox.className = "my-video-box-full";
+    myVideoBox.appendChild(this.myVideo);
+
+    if (window.cordova && window.cordova.plugins && window.cordova.plugins.iosrtc) {
+        window.cordova.plugins.iosrtc.refreshVideos();
+    } else {
+        this.myVideo.play();
+    }
+};
+
 const eventsWithDispatch = (rtc, emit, dispatch, isReconnect) => {
     rtc.on('localStream', (stream) => {
-        console.log('[eventsWithDispatch]: localStream');
         // Notice: 화상 교육 화면에서 처음 message 호출하면 오류 발생 antd 2.13.4 기준)
         dispatch(creator.localStream(stream));
+        onLocalStream();
     });
     rtc.on('readyToCall', () => {
-        console.log('[eventsWithDispatch]: readyToCall');
         emit('usePlugin', {id: 'rtc'});
         // 재연결 관련 로직 추가
         if(isReconnect && roomName) {
-            rtc.joinRoom(roomName);
+            // rtc.joinRoom(roomName);
         }
     });
 
     rtc.on('videoAdded', (video, peer) => {
-        console.log('[eventsWithDispatch]: videoAdded');
         dispatch(creator.appendRemote(video, peer));
         roomName = rtc.roomName;
     });
 
     rtc.on('videoRemoved', (video, peer) => {
-        console.log('[eventsWithDispatch]: videoRemoved');
         dispatch(creator.removeRemote(video, peer));
         roomName = undefined;
     });
@@ -96,7 +123,7 @@ const initialize = (socket, emit, dispatch, isReconnect, resource) => {
 
     const rtc = makeRTC(socket, resource);
 
-    dispatch(creator.initRTC(rtc));
+    dispatch(creator.initRTC(rtc, resource));
 
     eventsWithDispatch(rtc, emit, dispatch, isReconnect);
 

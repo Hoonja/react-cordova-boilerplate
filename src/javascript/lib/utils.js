@@ -24,3 +24,16 @@ export function isWebBrowser() {
     }
 }
 
+export function getCurrentAppVersion() {
+    if(window.cordova.getAppVersion) {
+        window.cordova.getAppVersion.getVersionNumber((version) => {
+            return version;
+        }, (err) => {
+            console.log('err: ', err);
+            return '-';
+        })
+    } else {
+        return '-.-.-'
+    }
+}
+
