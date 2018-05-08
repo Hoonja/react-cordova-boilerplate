@@ -148,7 +148,7 @@ class VideoPhone extends Component {
             this.connectRoom(values.subtype.CONNECT);
             this.setTalk('create');
             setTimeout(() => {
-                if (callStatus=== values.callStatus.CALL_WAIT) {
+                if (this.props.callStatus === values.callStatus.CALL_WAIT) {
                     this.props.updateCallStatus(values.callStatus.CALL_FAIL);
                 }
             }, TIME_WAIT);

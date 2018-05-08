@@ -15,7 +15,6 @@ import { createBrowserHistory } from 'history';
 import * as reducers from './redux/reducers';
 
 import App from './App';
-// import registerServiceWorker from './registerServiceWorker';
 
 import {AuthRoute} from './mobileCommons/security/components';
 
@@ -65,4 +64,3 @@ const Root = () => (
 
 
 ReactDOM.render(<Root />, document.getElementById('root'));
-// registerServiceWorker();

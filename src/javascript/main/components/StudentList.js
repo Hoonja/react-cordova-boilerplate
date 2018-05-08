@@ -52,7 +52,6 @@ class StudentList extends React.Component {
         const { parent } = this.props;
         const obj = api.getRoomId({name: `${parent.id}_${item.id}`});
         return this.props.multipleList([{id:'room', url :obj.url, params : obj.params }])
-        // return APICaller.get(obj.url, obj.params)
             .then(() => {
                 const {room} = this.props;
                 if(room.id) {

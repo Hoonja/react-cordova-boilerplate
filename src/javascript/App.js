@@ -126,9 +126,7 @@ class App extends React.Component {
         return (
             <div>
                 <StickyContainer className="contents-container">
-                    {/*<HeaderContainer onOpenChange={this.onOpenChange}/>*/}
                     <WrapperContainer />
-                    {/*<FooterContainer />*/}
                 </StickyContainer>
             </div>
         );

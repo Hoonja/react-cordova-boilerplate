@@ -18,18 +18,6 @@ export const requestPermissions = () => {
               console.log('[PageContainer] ' + result);
               return requestPermission(permissions, permissions.RECORD_AUDIO)
           })
-          // .then((result) => {
-          //     console.log('[PageContainer] ' + result);
-          //     return this.requestPermission(permissions, permissions.MODIFY_AUDIO_SETTINGS)
-          // })
-          // .then((result) => {
-          //     console.log('[PageContainer] ' + result);
-          //     return this.requestPermission(permissions, permissions.WRITE_EXTERNAL_STORAGE)
-          // })
-          // .then((result) => {
-          //     console.log('[PageContainer] ' + result);
-          //     return this.requestPermission(permissions, permissions.READ_PHONE_STATE)
-          // })
           .catch((err) => {
               console.error('[PageContainer] error: ' + err);
           });
