@@ -119,7 +119,7 @@ class VideoPhone extends Component {
         const {student} = this.props.data;
 
         setTimeout(() => {
-            this.props.updateStatus(values.callStatus.CONNECT, student.id, false, subType );
+            this.props.updateStatus(values.rtcStatus.CONNECT, student.id, false, subType );
         }, 300);
     }
 
@@ -150,8 +150,8 @@ class VideoPhone extends Component {
     disconnect(state) {
         const {status} = this.props;
         const {student} = this.props.data;
-        if(status === values.callStatus.CONNECT) {
-            this.props.updateStatus(values.callStatus.DISCONNECT, student.id, false );
+        if(status === values.rtcStatus.CONNECT) {
+            this.props.updateStatus(values.rtcStatus.DISCONNECT, student.id, false );
         }
         this.stopVibrate();
         // this.onStopTimer();
@@ -291,7 +291,7 @@ class VideoPhone extends Component {
     endCall() {
         const {student} = this.props.data;
         setTimeout(() => {
-            this.props.updateStatus(values.callStatus.DISCONNECT, student.id, false );
+            this.props.updateStatus(values.rtcStatus.DISCONNECT, student.id, false );
             this.props.onClose();
         }, 1500);
     }
@@ -360,9 +360,9 @@ class VideoPhone extends Component {
 
     getTimerStatus() {
         const {status, rtcStatus} = this.props;
-        if(status === values.callStatus.CONNECT && rtcStatus === values.rtcStatus.REMOTE_APPEND) {
+        if(status === values.rtcStatus.CONNECT && rtcStatus === values.rtcStatus.REMOTE_APPEND) {
             return true;
-        } else if(status === values.callStatus.DISCONNECT) {
+        } else if(status === values.rtcStatus.DISCONNECT) {
             return false;
         }
     }

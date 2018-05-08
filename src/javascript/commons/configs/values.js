@@ -22,16 +22,16 @@ export const rtcStatus = {
     REMOTE_APPEND: 'remoteAppend',
     REMOTE_REMOVE: 'remoteRemove',
     MODE_ACTIVE: 'active',
-    LOCAL_STREAM: 'localStream'
+    LOCAL_STREAM: 'localStream',
+    CONNECT: 'connect',
+    DISCONNECT: 'disconnect',
+    CLOSE: 'close',
+    ACCEPT: 'accept',
 };
 
 export const callStatus = {
     REQUEST: 'request',
     RECEIVED: 'received',
-    CONNECT: 'connect',
-    DISCONNECT: 'disconnect',
-    CLOSE: 'close',
-    ACCEPT: 'accept',
     CALL_WAIT: 'wait',
     CALLING: 'calling',
     CALL_END: 'called',

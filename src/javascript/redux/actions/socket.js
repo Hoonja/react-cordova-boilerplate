@@ -452,13 +452,13 @@ export const updateVideoCallConnectStatus = (status, student, useRelay, subType)
 
         dispatch(creator.rtcConnectStatus(status));
 
-        if(status === values.callStatus.CONNECT && student) {
+        if(status === values.rtcStatus.CONNECT && student) {
             // NOTICE: 불안정 접속 방지 위함
             // disconnectVideoCall(dispatch, socket, user, student);
             connectVideoCall(dispatch, socket, user, student, useRelay, subType);
-        } else if(status === values.callStatus.DISCONNECT && student) {
+        } else if(status === values.rtcStatus.DISCONNECT && student) {
             disconnectVideoCall(dispatch, socket, user, student);
-        } else if(status === values.callStatus.CLOSE) {
+        } else if(status === values.rtcStatus.CLOSE) {
             console.log('close lesson room');
         }
     }
