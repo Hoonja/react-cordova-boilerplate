@@ -9,6 +9,8 @@ import Loader from 'react-loader';
 
 import {Flex, Button} from 'antd-mobile';
 
+const TIME_WAIT = 40000;
+
 const mapStateToProps = ({ fetch, security, socket }) => {
     const room = service.getValue(fetch, 'multipleList.room', {});
     const student = service.getValue(room, 'sdata.studentDetail', {});
@@ -87,17 +89,17 @@ class VideoPhone extends Component {
             }
         }
         if(prevProps.callStatus !== callStatus) {
-
             if(callStatus === values.callStatus.CALL_END) {
                 this.endCall();
+            } else if(callStatus === values.callStatus.CALL_FAIL) {
+                this.failCall();
             }
         }
     }
 
     appendRemoteVideo({video, peer}) {
         var peerVideoBox = document.getElementById('peerVideoBox');
-        this.stopVibrate();
-        // this.onStartTimer();
+        // this.stopVibrate();
         video.style.zIndex = -2;
         video.style.width = '100%';
         video.style.height = '100%';
@@ -145,8 +147,14 @@ class VideoPhone extends Component {
         if(callStatus === values.callStatus.CALL_WAIT) {
             this.connectRoom(values.subtype.CONNECT);
             this.setTalk('create');
+            setTimeout(() => {
+                if (callStatus=== values.callStatus.CALL_WAIT) {
+                    this.props.updateCallStatus(values.callStatus.CALL_FAIL);
+                }
+            }, TIME_WAIT);
+
         } else if(callStatus === values.callStatus.RECEIVED) {
-            this.startVibrate();
+            // this.startVibrate();
         }
     }
 
@@ -156,10 +164,8 @@ class VideoPhone extends Component {
         if(status === values.rtcStatus.CONNECT) {
             this.props.updateRtcStatus(values.rtcStatus.DISCONNECT, student.id, false );
         }
-        this.stopVibrate();
-        // this.onStopTimer();
+        // this.stopVibrate();
         setTimeout(() => {
-            console.log('disconnec t', this.state);
             this.setTalk(state);
         });
         this.props.onClose();
@@ -291,6 +297,13 @@ class VideoPhone extends Component {
         return (Object.keys(remote).length > 0);
     }
 
+    failCall() {
+        const {student} = this.props.data;
+        setTimeout(() => {
+            this.props.updateRtcStatus(values.rtcStatus.DISCONNECT, student.id, false );
+            this.props.onClose();
+        }, 2000);
+    }
     endCall() {
         const {student} = this.props.data;
         setTimeout(() => {
@@ -303,13 +316,15 @@ class VideoPhone extends Component {
         const { callStatus } = this.props;
 
         if (callStatus === values.callStatus.CALL_END) {
-            return '통화를 종료합니다.';
+            return '영상 통화를 종료합니다.';
         } else if(callStatus === values.callStatus.CALLING) {
             return (<Duration format={'mm:ss'} on={this.getTimerStatus()} setDuration={this.setDuration.bind(this)} />);
         } else if (callStatus === values.callStatus.CALL_WAIT) {
             return '연결중입니다.';
         } else if (callStatus === values.callStatus.RECEIVED) {
             return '전화 왔습니다.';
+        } else if (callStatus === values.callStatus.CALL_FAIL) {
+            return '상대방이 받지 않아 영상 통화를 종료합니다.';
         }
     }
 
@@ -347,7 +362,6 @@ class VideoPhone extends Component {
                 let arr = [];
                 let inx = 30;
                 while(inx-- > 0) arr.push(900, 500);
-                console.log(arr);
                 navigator.vibrate(arr);
             }
         }
@@ -407,6 +421,16 @@ class VideoPhone extends Component {
                     <Flex className="button-list" justify="center">
                         <Flex.Item className="videophone-button">
                             <Button type="warning" size="large" onClick={() => this.disconnect(values.callStatus.CALL_CANCEL)}>
+                                <CustomIcon type="MdCallEnd"/>
+                                종료</Button>
+                        </Flex.Item>
+                    </Flex>
+                );
+            case values.callStatus.CALL_FAIL:
+                return (
+                    <Flex className="button-list" justify="center">
+                        <Flex.Item className="videophone-button">
+                            <Button type="warning" size="large" onClick={() => this.disconnect(values.callStatus.CALL_FAIL)}>
                                 <CustomIcon type="MdCallEnd"/>
                                 종료</Button>
                         </Flex.Item>
