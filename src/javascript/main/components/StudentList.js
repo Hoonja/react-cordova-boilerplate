@@ -56,7 +56,7 @@ class StudentList extends React.Component {
             .then(() => {
                 const {room} = this.props;
                 if(room.id) {
-                    this.props.updateVideoCallStatus(values.callStatus.REQUEST, {});
+                    this.props.updateVideoCallStatus(values.callStatus.CALL_WAIT, {});
                     this.props.move(path.video);
                 } else {
                     console.log('room이 없음');
