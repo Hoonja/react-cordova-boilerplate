@@ -16,24 +16,6 @@ export const disconnect = () => {
     }
 };
 
-export const checked = (item) => {
-    return {
-        type: type.SOCKET_ON_CHECKED,
-        payload: {
-            item
-        }
-    }
-};
-
-export const checkedTalk = (room) => {
-    return {
-        type: type.SOCKET_TALK_CHECKED,
-        payload: {
-            room
-        }
-    }
-};
-
 export const emit = () => {
     return {
         type: type.SOCKET_EMIT,
@@ -50,24 +32,6 @@ export const emitTalk = (item) => {
         }
     }
 };
-
-export const initWorker = (worker) => {
-    return {
-        type: type.MEDIA_WORKER_INIT,
-        payload: {
-            worker
-        }
-    }
-};
-export const initTalk = (talk) => {
-    return {
-        type: type.SOCKET_TALK_INIT,
-        payload: {
-            talk
-        }
-    }
-};
-
 
 export const initRTC = (rtc, resource) => {
     return {
@@ -104,25 +68,6 @@ export const removeRemote = (video, peer) => {
         type: type.RTC_REMOTE_REMOVE,
         payload: {
             remote: peer.id
-        }
-    }
-};
-
-export const changeCamera = (item, camera) => {
-    return {
-        type: type.RTC_CAMERA_CHANGE,
-        payload: {
-            item,
-            camera
-        }
-    }
-};
-
-export const changeLocalResource = (localResource) => {
-    return {
-        type: type.RTC_LOCAL_RESOURCE_CHANGE,
-        payload: {
-            localResource
         }
     }
 };

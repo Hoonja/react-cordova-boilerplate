@@ -4,23 +4,14 @@ import { connect } from 'react-redux';
 import { StudentList } from './';
 import main from '../../../resource/main.png';
 
-import { Flex, Card } from 'antd-mobile';
+import { Flex } from 'antd-mobile';
 
 const mapStateToProps = ({ fetch, security }) => {
     return {
         parent: security,
     }
 };
-const mapDispatchToProps = (dispatch) => {
-    return {
-    }
-};
-
 class MainContainer extends React.Component {
-
-    componentDidMount() {
-        // this.getList();
-    }
 
     render() {
         const {parent} = this.props;
@@ -41,4 +32,4 @@ class MainContainer extends React.Component {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(MainContainer);
+export default connect(mapStateToProps, null)(MainContainer);

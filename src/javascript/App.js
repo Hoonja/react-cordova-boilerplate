@@ -8,7 +8,6 @@ import { WrapperContainer } from './layout';
 
 import Push from './lib/Push';
 import {PLATFORM, getPlatformName} from './lib/utils';
-import {requestPermissions} from './lib/permissions';
 import { connect } from 'react-redux';
 
 import {fetch, socket as action, socket as socketAction} from './redux/actions';
@@ -68,6 +67,8 @@ class App extends React.Component {
         if (window.cordova.platformId === 'ios') {
             window.cordova.plugins.iosrtc.registerGlobals();
         }
+        // push 제거
+        return ;
         if(window.plugins && window.plugins.OneSignal && window.cordova.platformId === 'ios') {
             Push.init(
                 (pushIds) => {

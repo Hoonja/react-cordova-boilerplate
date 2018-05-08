@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {  Drawer, List, Icon } from 'antd-mobile';
+import {  Drawer } from 'antd-mobile';
 
 import { MenuList, MyPage } from '../';
 

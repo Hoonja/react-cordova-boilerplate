@@ -3,15 +3,6 @@ import localforage from 'localforage';
 import {socket as type} from '../types';
 import {values} from '../../commons/configs'
 
-const workspace = {
-    color: '#FF6900',
-    weight: 20,
-    mode: 'draw',
-    needToClear: false,
-    use: false,
-    text: {x:0, y:0, size:20}
-};
-
 const initialState = {
     status: 'closed',
     localResource: {
@@ -19,11 +10,6 @@ const initialState = {
     remote: {},
     record: {},
     message: {},
-    talk: {},
-    point: 0,
-    quality: 'high',
-    canvas: {workspace},
-    shared: undefined
 };
 
 const getMessage = (message) => {

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import {push} from 'react-router-redux';
 
 import {values} from '../../commons/configs';
-import { fetch, security as action } from '../../redux/actions';
+import {  security as action } from '../../redux/actions';
 
 import { Flex, Button, List, Switch, Modal } from 'antd-mobile';
 import {SecurityService, SessionService} from '../../mobileCommons/security/services';
@@ -19,8 +19,6 @@ const mapStateToProps = ({ fetch, security }) => {
 };
 const mapDispatchToProps = (dispatch) => {
     return {
-        multipleList: (list) => dispatch(fetch.multipleList(list)),
-        list: (url, params) => dispatch(fetch.list(url, params)),
         logout: () => {
             return dispatch(action.logout());
         },
@@ -29,30 +27,6 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 class Settings extends React.Component {
-    state = {
-
-    };
-    constructor(props){
-        super(props);
-    }
-
-    componentDidMount() {
-        this.getList();
-    }
-
-    getList() {
-        // const {parent} = this.props;
-        // const obj =  api.getFamily(parent.actorId);
-        // return APICaller.get(obj.url, obj.params)
-        //     .then(({data}) => {
-        //         if(data.count === 0 ) {
-        //             return ;
-        //         }
-        //         const obj = api.getMembers(data.results[0].id);
-        //         return this.props.multipleList([{id:'familyMembers', url :obj.url, params : obj.params }]);
-        //     });
-    }
-
     confirmLogout() {
         Modal.alert('로그아웃', '학부모앱 서비스에서 로그아웃 하시겠습니까?', [
             { text: '취소', onPress: () => {return false;}, style: 'default'},
@@ -61,12 +35,6 @@ class Settings extends React.Component {
     }
 
     logout() {
-        // e.preventDefault();
-        // const confirm = this.confirmLogout();
-        // console.log(confirm);
-        // if(!confirm) {
-        //     return ;
-        // }
         localStorage.removeItem(values.storageKey.AUTH_TOKENNAME);
         SessionService.logout();
         SecurityService.logout()

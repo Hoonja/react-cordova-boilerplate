@@ -14,19 +14,16 @@ import { APICaller } from '../../mobileCommons/api';
 
 const Item = List.Item;
 
-const mapStateToProps = ({ fetch, security, socket }) => {
+const mapStateToProps = ({ fetch, security }) => {
     const students = (service.getValue(fetch, 'multipleList.familyMembers.results') || []).filter(item => item.modelType === 1);
     return {
-        item: fetch.item,
         parent: security.actor,
         room: service.getValue(fetch, 'multipleList.room', {}),
-        students,
-        socket
+        students
     }
 };
 const mapDispatchToProps = (dispatch) => {
     return {
-        get: (url, params) => dispatch(fetch.get(url, params)),
         multipleList: (list) => dispatch(fetch.multipleList(list)),
         move: (location) => dispatch(push(location)),
         updateVideoCallStatus: (callStatus, item) => dispatch(action.updateVideoCallStatus(callStatus, item))
@@ -34,12 +31,6 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 class StudentList extends React.Component {
-    state = {
-    };
-    constructor(props){
-        super(props);
-    }
-
     componentDidMount() {
         this.getList();
     }
@@ -64,7 +55,6 @@ class StudentList extends React.Component {
         // return APICaller.get(obj.url, obj.params)
             .then(() => {
                 const {room} = this.props;
-                console.log('call ', room);
                 if(room.id) {
                     this.props.updateVideoCallStatus(values.callStatus.REQUEST, {});
                     this.props.move(path.video);
@@ -87,6 +77,7 @@ class StudentList extends React.Component {
     receiveCall(e, item) {
         e.preventDefault();
         console.log('receiveCall');
+        return ;
 
         const receiveInfo = {
             roomId: '7291_7293',

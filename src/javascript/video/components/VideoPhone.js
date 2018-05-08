@@ -126,14 +126,7 @@ class VideoPhone extends Component {
     connect() {
         const {callStatus} = this.props;
         const {parent, room} = this.props.data;
-        const serverUrl = service.getUrl();
-        if(parent.id === 12126) {
-            parent.id = 7293;
-            parent.authHumanName = "학생";
-            room.name = "7291_7293";
-        }
-
-        this.serverUrl = serverUrl;
+        this.serverUrl = service.getUrl();
         this.roomId = room.name;
         this.actorId = parent.id;
         this.actorName = parent.authHumanName;

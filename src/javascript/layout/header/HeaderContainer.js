@@ -1,27 +1,10 @@
 import React from 'react';
-import { connect } from 'react-redux';
 
 import imgLogo from '../../../resource/logo.png';
 
-import { fetch } from '../../redux/actions/index';
 import { NavBar } from 'antd-mobile';
 
 import { CustomIcon } from '../../commons/components';
-
-const mapStateToProps = ({}) => {
-    return {
-
-    }
-};
-
-const mapDispatchProps = dispatch => ({
-    reset: () => dispatch(fetch.reset()),
-    getItem: (url, params, isNoWarning) => dispatch(fetch.get(url, params, isNoWarning)),
-    getMultipleList: (list) => dispatch(fetch.multipleList(list)),
-    resetMultipleList: () => dispatch(fetch.resetMultipleList()),
-    // goBack: () => dispatch(goBack()),
-    // move: (location) => dispatch(push(location))
-});
 
 class HeaderContainer extends React.Component {
 
@@ -50,7 +33,6 @@ class HeaderContainer extends React.Component {
         ]
     }
 
-
     onOpenChange(target = null){
         const state = `${target}`;
 
@@ -77,4 +59,4 @@ class HeaderContainer extends React.Component {
 
 }
 
-export default connect(mapStateToProps, mapDispatchProps)(HeaderContainer);
+export default HeaderContainer;
