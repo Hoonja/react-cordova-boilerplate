@@ -1,0 +1,123 @@
+.my-video-box-full {
+    position: absolute;
+    background-color: transparent;
+    height: 100vh;
+    width: 100vw;
+    z-index: -1;
+    padding: 0px !important;
+}
+
+.my-video-box-small {
+    position:fixed;
+    top:70px;
+    left:16px;
+    width:78px;
+    height:140px;
+    border-radius:2px;
+    overflow:hidden;
+    padding: 0px !important;
+}
+.my-video-box-small video {
+    position:absolute;
+    left:0;
+    top:0;
+    height:100%;
+    padding: 0px !important;
+}
+
+
+.peer-video-box {
+    position: absolute;
+    background-color: transparent;
+    height: 100vh;
+    width: 100vw;
+    z-index: -2;
+}
+
+
+
+.videophone-student-division {
+    background-color: transparent;
+    position: absolute;
+    top: 70px;
+    width: 100%;
+    z-index: 999;
+    .student-img {
+        border-radius: 50%;
+        width: 60px;
+    }
+
+    .student-name {
+        font-size: 30px;
+        font-weight: bold;
+        color: #FFFFFF;
+        margin-left: 0px !important;
+        margin-top: 5px;
+    }
+
+    .call-status {
+        margin-top: 10px;
+        font-size: 18px;
+        color: #FFFFFF;
+        margin-left: 0px !important;
+    }
+}
+
+.videophone-camera-switch {
+    background-color: transparent;
+    position: absolute;
+    top: 50px;
+    right: 10px;
+    width:50px;
+    height: 50px;
+    color: #FFFFFF;
+}
+
+.videophone-spinner {
+    .loader-icon {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #FFFFFF;
+    }
+}
+.videophone-button-division {
+    background-color: transparent;
+    position: absolute;
+    bottom: 40px;
+    width: 100%;
+    z-index: 999;
+    .am-flexbox-item {
+        margin-left: 0px !important;
+    }
+    .videophone-icon {
+        max-width: 90px !important;
+        text-align: center;
+        z-index: 999;
+        .am-icon-md {
+            padding: 14px 13px;
+            background-color: white;
+            border-radius: 50%;
+            color: #939595;
+        }
+    }
+    .videophone-button {
+        max-width: 140px !important;
+        padding: 0 5px;
+        z-index: 999;
+        .am-button {
+            -webkit-border-radius: 40px;
+            -moz-border-radius: 40px;
+            border-radius: 40px;
+            border: none;
+            .am-icon {
+                padding-right: 10px;
+            }
+            &::before {
+                height: 0px !important;
+                border: none;
+            }
+        }
+    }
+}

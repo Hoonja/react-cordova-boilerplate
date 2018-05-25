@@ -1,9 +1,9 @@
 import CustomIcon from './CustomIcon';
-import Timer from './Timer';
+import Duration from './Duration';
 import { CertifyButton } from './buttons';
 
 export{
     CustomIcon,
-    Timer,
+    Duration,
     CertifyButton
 }

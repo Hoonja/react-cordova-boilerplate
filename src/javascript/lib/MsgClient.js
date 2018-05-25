@@ -3,6 +3,7 @@ import SocketIO from 'socket.io-client';
 
 const DEFAULT_URL_LOCAL = 'http://server.local.danbi:27070/users';
 const DEFAULT_URL_REMOTE = 'https://msg.danbi.biz/users';
+const DEFAULT_URL_PRODUCTION = 'https://msg.wink.co.kr/users';
 export const MSG_TYPE = {
   call: 'CALL',
   noti: 'NOTI',
@@ -35,7 +36,9 @@ export class MsgClient extends Emitter {
       if (uri && uri !== '') {
         _uri = uri;
       } else {
-        if (process.env.NODE_ENV === 'development') {
+        if(window.wink_cordova_env === 'production') {
+          _uri = DEFAULT_URL_PRODUCTION;
+        } else if (process.env.NODE_ENV === 'development') {
           _uri = DEFAULT_URL_LOCAL;
         } else {
           _uri = DEFAULT_URL_REMOTE;
@@ -50,7 +53,7 @@ export class MsgClient extends Emitter {
     } else {
       console.log('[MsgClient] return already created instance');
       // setTimeout(() => {
-      //   instance.onConnect();        
+      //   instance.onConnect();
       // }, 0);
     }
 

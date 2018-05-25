@@ -53,7 +53,6 @@ module.exports = {
   appIndexJs: resolveApp('src/javascript/root.js'),
   appPackageJson: resolveApp('package.json'),
   appSrc: resolveApp('src'),
-  commonSrc: resolveApp('node_modules/wink_mobile_commons'),
   yarnLockFile: resolveApp('yarn.lock'),
   testsSetup: resolveApp('src/setupTests.js'),
   appNodeModules: resolveApp('node_modules'),

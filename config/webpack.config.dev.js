@@ -12,7 +12,6 @@ const eslintFormatter = require('react-dev-utils/eslintFormatter');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
 const getClientEnvironment = require('./env');
 const paths = require('./paths');
-const pxtorem = require('postcss-pxtorem');
 const theme = require('../package.json').theme;
 
 // Webpack uses `publicPath` to determine where the app is being served from.
@@ -24,17 +23,6 @@ const publicPath = '/';
 const publicUrl = '';
 // Get environment variables to inject into our app.
 const env = getClientEnvironment(publicUrl);
-
-const Visualizer = require('webpack-visualizer-plugin'); // remove it in production environment.
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin; // remove it in production environment.
-const otherPlugins = process.argv[1].indexOf('webpack-dev-server') >= 0 ? [] : [
-  new Visualizer(), // remove it in production environment.
-  new BundleAnalyzerPlugin({
-    defaultSizes: 'parsed',
-    // generateStatsFile: true,
-    statsOptions: { source: false }
-  }), // remove it in production environment.
-];
 
 const postcssOpts = {
   ident: 'postcss', // https://webpack.js.org/guides/migrating/#complex-options
@@ -146,7 +134,7 @@ module.exports = {
             loader: require.resolve('eslint-loader'),
           },
         ],
-        include: [paths.appSrc, paths.commonSrc],
+        include: [paths.appSrc],
       },
       {
         // "oneOf" will traverse all following loaders until one will
@@ -167,7 +155,7 @@ module.exports = {
           // Process JS with Babel.
           {
             test: /\.(js|jsx)$/,
-            include: [paths.appSrc, paths.commonSrc],
+            include: [paths.appSrc],
             loader: 'babel-loader',
             options: {
                 plugins: [
@@ -225,7 +213,7 @@ module.exports = {
             test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
             loader: require.resolve('url-loader'),
             options: {
-              limit: 10000,
+              limit: 100000,
               name: 'static/resource/[name].[hash:8].[ext]',
             },
           },

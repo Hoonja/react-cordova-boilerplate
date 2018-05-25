@@ -1,6 +1,7 @@
+/* global appAvailability */
+
 import React from 'react';
 import logo from '../../../resource/logo.png';
-import icon from '../../../resource/icon.png';
 import { NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
 
@@ -11,7 +12,7 @@ import { service } from '../../commons/configs';
 import { CustomIcon } from '../../commons/components';
 
 
-const mapStateToProps = ({fetch, layout, router}) => {
+const mapStateToProps = ({layout}) => {
 
     const menu = service.getValue(layout, 'footerList')
     .filter(item => item.level === 0);
@@ -29,24 +30,40 @@ class FooterNavigation extends React.Component {
         this.renderTabBar = this.renderTabBar.bind(this);
     }
 
-    onClick(e) {
-        e.preventDefault();
-        console.log('this');
-        window.location.href = 'applinks:launchapp.wink.co.kr';
+    openParentApp() {
+        var parentApp = 'winkparentapp';
+        window.open = window.cordova.InAppBrowser.open;
+
+        appAvailability.check(
+            parentApp + '://',
+            () => {
+                window.open('winkparentapp://go/to/path?param1=12&param2=34', '_system');
+            },
+            () => {
+                window.cordova.plugins.market.open('id1294082776', {
+                    success: function () {
+                        console.log('market open success');
+                    },
+                    error: function () {
+                        console.log('market open error');
+                    }
+                });
+            }
+        )
     }
 
     renderTab(tab){
         switch(tab.id){
             case '100000000':
                 return (
-                    <a href={tab.link} target="_new" className="navigation-menu">
-                        <img src={icon} alt="icon" className="icon"/>
-                    </a>
+                    <div className="navigation-menu" onClick={() => this.openParentApp()}>
+                        <CustomIcon type={tab.type} className="custom-icon" /> 윙크 학부모앱
+                    </div>
                 );
             case '300000000':
                 return (
                     <NavLink to={ tab.link } className="navigation-menu">
-                        <CustomIcon type={tab.type} roots="FontAwesome" className="custom-icon" />
+                        <CustomIcon type={tab.type} roots="FontAwesome" className="custom-icon" /> 설정
                     </NavLink>
                 )
             default:

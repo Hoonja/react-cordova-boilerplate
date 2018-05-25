@@ -2,32 +2,27 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { StudentList } from './';
+import main from '../../../resource/main.png';
 
-import { Flex, Card } from 'antd-mobile';
+import { Flex } from 'antd-mobile';
 
 const mapStateToProps = ({ fetch, security }) => {
     return {
         parent: security,
     }
 };
-const mapDispatchToProps = (dispatch) => {
-    return {
-    }
-};
-
 class MainContainer extends React.Component {
-
-    componentDidMount() {
-        // this.getList();
-    }
 
     render() {
         const {parent} = this.props;
+        const name = parent.humanName + ((parent.userName.indexOf('@noid') > -1 || parent.userName.indexOf('@named') > -1) ? '' : `(${parent.userName})`);
         return (
             <div>
-                <Flex direction="column" className="login-wrapper">
-                    <Flex.Item className="main-img">
-                        {`안녕하세요, ${parent.humanName}(${parent.userName})님!`}
+                <Flex direction="column" className="main-wrapper">
+                    <Flex.Item className="main-top">
+                        <div className="main-top-hello">안녕하세요,</div>
+                        <div className="main-top-name">{`${name}님!`}</div>
+                        <img src={main} alt="main" className="main-top-img"/>
                     </Flex.Item>
                     <Flex.Item className="main-student">
                         <StudentList/>
@@ -38,4 +33,4 @@ class MainContainer extends React.Component {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(MainContainer);
+export default connect(mapStateToProps, null)(MainContainer);

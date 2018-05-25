@@ -38,7 +38,38 @@ export const api = {
     }),
     getAuthToken : (id) => ({
         url: `/account/auths/${id}/get_auth_token/`
+    }),
+    modifyActor : (id, params = null) => ({
+        url: `/account/actors/${id}/modify/`,
+        params: {
+            ...params
+        }
+    }),
+    sendTalk : (params = null) => ({
+        url: `/aux/talks/`,
+        params: {
+            ...params
+        }
+    }),
+    modifyTalk : (id, params = null) => ({
+        url: `/aux/talks/${id}/modify/`,
+        params: {
+            ...params
+        }
+    }),
+    setTalk : (id, params = null) => ({
+        url: `/aux/talks/${id}/set_status/`,
+        params: {
+            ...params
+        }
+    }),
+    sendPushMessage: (params = null) => ({
+        url: `/account/actors/send_mobile_push/`,
+        params: {
+            ...params
+        }
     })
+
 };
 
 

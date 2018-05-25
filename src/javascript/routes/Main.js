@@ -1,6 +1,5 @@
 import React from 'react';
 import { Route  } from 'react-router-dom';
-import {AuthRoute} from 'wink_mobile_commons/dist/security/components';
 
 import { path } from '../commons/configs';
 import { MainContainer } from '../main/components';
@@ -10,7 +9,7 @@ class Main extends React.Component {
 
     render() {
         return (
-            <div className="main-container">
+            <div className="main-container" style={{paddingTop: 'max(12px, env(safe-area-inset-top))'}}>
                 <Route exact path={path.main} component={MainContainer} />
                 <FooterContainer />
                 <FooterNavigation />

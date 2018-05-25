@@ -1,25 +1,51 @@
 .setting {
   &-navbar {
     width: 100%;
+    border-bottom: 1px #D7D7D8 solid;
     &-menu {
-      color: #fff;
+      color: #24bDD4;
+    }
+    &-title {
+      color: #000000 !important;
+    }
+    .am-navbar {
+      background-color: #ffffff !important;
     }
   }
   &-list {
     width: 100%;
+    height: 100vh;
     margin: 0px !important;
+    background-color: #EFEFF3;
     &-wrapper {
       & .am-flexbox-item {
+        margin-left: 0px !important;
         width: 100%;
+        margin-bottom: 30px;
         & .am-card {
           min-height: 36px;
         }
       }
+    }
+    &-header {
+      font-size: 18px;
+      .am-list-body {
+        border: none !important;
+      }
+    }
+    .am-list-item {
+      &:first-child {
+        border-top: 1px #DCDCDF solid;
+      }
+      border-bottom: 1px #DCDCDF solid;
     }
   }
   &-item {
     & .am-list {
       min-height: 200px;
     }
+  }
+  &-button {
+    color: #FFFFFF !important;
   }
 }

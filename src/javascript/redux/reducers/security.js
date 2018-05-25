@@ -1,5 +1,5 @@
 import {security as type} from '../types';
-import { SessionService } from 'wink_mobile_commons/dist/security/services';
+import { SessionService } from '../../mobileCommons/security/services';
 
 const initialState = SessionService.userInfo || {actorType: 2};
 

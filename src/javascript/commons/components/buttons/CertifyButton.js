@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { APICaller } from 'wink_mobile_commons/dist/api';
+import { APICaller } from '../../../mobileCommons/api';
 import { service, api } from '../../configs';
 
 import { Button, Toast } from 'antd-mobile';
@@ -88,9 +88,9 @@ class CertifyButton extends React.Component {
         return (
             <Button
                 type="primary"
-                size="small"
                 disabled={complete}
                 onClick={this.onClickSend.bind(this)}
+                className="certify-button"
             >{send ? '인증번호 재발송' : '인증번호 발송'}</Button>
         );
     }
