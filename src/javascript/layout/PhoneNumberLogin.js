@@ -54,9 +54,6 @@ class PhoneNumberLogin extends React.Component {
         this.countDown = this.countDown.bind(this);
     }
 
-    componentDidMount() {
-    }
-
     countDown(fromNow){
         this.setState({
             fromNow,

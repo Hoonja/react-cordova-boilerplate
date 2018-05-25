@@ -14,19 +14,16 @@ import { APICaller } from '../../mobileCommons/api';
 
 const Item = List.Item;
 
-const mapStateToProps = ({ fetch, security, socket }) => {
+const mapStateToProps = ({ fetch, security }) => {
     const students = (service.getValue(fetch, 'multipleList.familyMembers.results') || []).filter(item => item.modelType === 1);
     return {
-        item: fetch.item,
         parent: security.actor,
         room: service.getValue(fetch, 'multipleList.room', {}),
-        students,
-        socket
+        students
     }
 };
 const mapDispatchToProps = (dispatch) => {
     return {
-        get: (url, params) => dispatch(fetch.get(url, params)),
         multipleList: (list) => dispatch(fetch.multipleList(list)),
         move: (location) => dispatch(push(location)),
         updateVideoCallStatus: (callStatus, item) => dispatch(action.updateVideoCallStatus(callStatus, item))
@@ -34,12 +31,6 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 class StudentList extends React.Component {
-    state = {
-    };
-    constructor(props){
-        super(props);
-    }
-
     componentDidMount() {
         this.getList();
     }
@@ -61,12 +52,10 @@ class StudentList extends React.Component {
         const { parent } = this.props;
         const obj = api.getRoomId({name: `${parent.id}_${item.id}`});
         return this.props.multipleList([{id:'room', url :obj.url, params : obj.params }])
-        // return APICaller.get(obj.url, obj.params)
             .then(() => {
                 const {room} = this.props;
-                console.log('call ', room);
                 if(room.id) {
-                    this.props.updateVideoCallStatus(values.callStatus.REQUEST, {});
+                    this.props.updateVideoCallStatus(values.callStatus.CALL_WAIT, {});
                     this.props.move(path.video);
                 } else {
                     console.log('room이 없음');
@@ -87,6 +76,7 @@ class StudentList extends React.Component {
     receiveCall(e, item) {
         e.preventDefault();
         console.log('receiveCall');
+        return ;
 
         const receiveInfo = {
             roomId: '7291_7293',
@@ -97,33 +87,24 @@ class StudentList extends React.Component {
         this.props.move(path.video);
     }
 
-    renderStudent(inx) {
-        const {students} = this.props;
-        if(students.length >= inx) {
-            const student = students[inx-1];
-            return (
-                <Item
-                    thumb={service.getValue(student, 'sdata.authDetail.isMail', false) ? studentM : studentW}
-                    extra={
-                      <CustomIcon type="MdPhone" className="call-button" onClick={e => this.confirmModal(e, student)}/>
-                    }>
-                    <span onClick={e => this.receiveCall(e, student)}>{student.authHumanName}</span>
-                </Item>
-            )
-        } else {
-            return (
-                <Item></Item>
-            )
-        }
+    renderStudent(student) {
+        return (
+            <Item
+                thumb={service.getValue(student, 'sdata.authDetail.isMail', false) ? studentM : studentW}
+                extra={
+                  <CustomIcon type="MdPhone" className="call-button" onClick={e => this.confirmModal(e, student)}/>
+                }>
+                <span onClick={e => this.receiveCall(e, student)}>{student.authHumanName}</span>
+            </Item>
+        )
     }
 
     render() {
+        const {students} = this.props;
         return (
             <div>
                 <List className="main-student-list">
-                    {this.renderStudent(1)}
-                    {this.renderStudent(2)}
-                    {this.renderStudent(3)}
+                    {students.map(student => this.renderStudent(student))}
                 </List>
             </div>
         );

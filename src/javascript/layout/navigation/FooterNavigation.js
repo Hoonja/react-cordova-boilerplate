@@ -12,7 +12,7 @@ import { service } from '../../commons/configs';
 import { CustomIcon } from '../../commons/components';
 
 
-const mapStateToProps = ({fetch, layout}) => {
+const mapStateToProps = ({layout}) => {
 
     const menu = service.getValue(layout, 'footerList')
     .filter(item => item.level === 0);
@@ -30,12 +30,6 @@ class FooterNavigation extends React.Component {
         this.renderTabBar = this.renderTabBar.bind(this);
     }
 
-    onClick(e) {
-        e.preventDefault();
-        console.log('this');
-        window.location.href = 'applinks:launchapp.wink.co.kr';
-    }
-
     openParentApp() {
         var parentApp = 'winkparentapp';
         window.open = window.cordova.InAppBrowser.open;
@@ -48,13 +42,12 @@ class FooterNavigation extends React.Component {
             () => {
                 window.cordova.plugins.market.open('id1294082776', {
                     success: function () {
-                        console.log('margek open success');
+                        console.log('market open success');
                     },
                     error: function () {
-                        console.log('margek open error');
+                        console.log('market open error');
                     }
-                })
-                // window.location.href = 'https://itunes.apple.com/kr/app/%EC%9C%99%ED%81%AC-%ED%95%99%EB%B6%80%EB%AA%A8/id1294082776?mt=8';
+                });
             }
         )
     }

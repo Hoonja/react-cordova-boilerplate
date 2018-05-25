@@ -2,10 +2,8 @@ import SimpleWebRTC from 'danbi-simplewebrtc';
 import {SocketIOConnection} from 'danbi-msgclient';
 
 // import message from 'antd/lib/message';
-import {Toast} from 'antd-mobile';
 import {socket as creator} from '../creators';
 import {socket as type} from '../types';
-import {service, values} from '../../commons/configs';
 
 const authToken = '*danbi*';
 let actorId, currentRtc, roomName;
@@ -17,12 +15,7 @@ const makeRTC = (socket, params = null) => {
     myVideo.style.zIndex = -1;
     myVideo.style.width = '100%';
     myVideo.style.height = '100%';
-    // myVideo.style.marginLeft = '10%';
-    // myVideo.style.marginRight = '10%';
     myVideo.style.objectFit = 'cover';
-
-    // myVideo.style.height = 'auto';
-    // myVideo.style.width = 'auto';
     myVideo.fullscreenElement = true;
     myVideo.id = 'myVideo';
     myVideo.className = 'my-video';
@@ -98,26 +91,6 @@ const eventsWithDispatch = (rtc, emit, dispatch, isReconnect) => {
     });
 };
 
-const heathCheckHandler = (err, count, action, dispatch) => {
-    if(err) {
-        Toast.fail('접속 시, 오류가 발생하였습니다.');
-        return;
-    }
-    dispatch(creator.healthCheckResult(count));
-};
-
-const errorHandler = (err, count, action, dispatch) => {
-    if(err) {
-        Toast.fail('접속 시, 오류가 발생하였습니다.');
-        return;
-    }
-    if(count === 0) {
-        Toast.fail('대상자가 연결 되어 있지 않습니다.');
-        dispatch(creator.lessonConnectStatus(values.status.DISCONNECT));
-        return;
-    }
-};
-
 const initialize = (socket, emit, dispatch, isReconnect, resource) => {
     emit('login', {authToken, actorId});
 
@@ -160,44 +133,6 @@ export const socket = (socket) => {
                 break;
             case type.SOCKET_EMIT_TALK:
                 emit('message', {type: 'message', ...action.payload.item});
-                break;
-            case type.RTC_HEALTH_CHECK:
-                emit('message', {...action.payload.item}, (err, count) => heathCheckHandler(err, count, action, dispatch));
-                break;
-            case type.RTC_LESSON_CONNECT:
-                emit('message', {...action.payload.item}, (err, count) => errorHandler(err, count, action, dispatch));
-                break;
-            case type.RTC_LESSON_DISCONNECT:
-                emit('message', {...action.payload.item});
-                break;
-            case type.RTC_CAMERA_CHANGE:
-                emit('message', {...action.payload.item});
-                dispatch(creator.didChangeCamera(action.payload.camera));
-                break;
-            case type.RTC_CAMERA_QUALITY_CHANGE:
-                emit('message', {...action.payload.item});
-                dispatch(creator.didChangeCameraQuality(action.payload.quality));
-                break;
-            case type.RTC_AUDIO_CONFIG_CHANGE:
-                emit('message', {...action.payload.item});
-                break;
-            case type.RTC_POINT_SEND:
-                emit('message', {...action.payload.item});
-                dispatch(creator.didSendPoint(action.payload.point));
-                break;
-            case type.RTC_CONTENT_SHARE_START:
-                emit('message', {...action.payload.item});
-                dispatch(creator.didStartContentShare(action.payload.shared));
-                break;
-            case type.RTC_CONTENT_SHARE_FINISH:
-                emit('message', {...action.payload.item});
-                dispatch(creator.didFinishContentShare());
-                break;
-            case type.RTC_MANUAL_RECORD_CHANGE:
-                emit('message', {...action.payload.item});
-                break;
-            case type.RTC_SKETCHER_CHANGE:
-                emit('message', {...action.payload.item});
                 break;
             case type.RTC_CONNECT:
                 emit('message', {...action.payload.item});

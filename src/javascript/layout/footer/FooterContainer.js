@@ -1,7 +1,5 @@
 import React from 'react';
 
-import { Card, Flex } from 'antd-mobile';
-
 class FooterContainer extends React.Component {
 
     render() {

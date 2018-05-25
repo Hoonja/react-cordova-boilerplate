@@ -23,6 +23,7 @@
         "cordova-plugin-iosrtc": "^4.0.2",
         "cordova-plugin-market": "^1.2.0",
         "cordova-plugin-splashscreen": "^5.0.2",
+        "cordova-plugin-statusbar": "^2.4.2",
         "cordova-plugin-vibration": "~3.0.1",
         "cordova-plugin-whitelist": "1",
         "danbi-msgclient": "^0.1.2",
@@ -51,8 +52,7 @@
         "redux-thunk": "^2.2.0",
         "socket.io": "^2.0.4",
         "socket.io-client": "^2.0.4",
-        "webpack-dev-server": "^2.10.1",
-        "wink_mobile_commons": "git+https://github.com/DanbiEduCorp/wink_mobile_commons.git",
+        "webrtc-adapter": "^6.1.5",
         "xcode": "^1.0.0"
     },
     "devDependencies": {
@@ -197,7 +197,8 @@
             },
             "cordova-plugin-appavailability": {},
             "cordova-plugin-market": {},
-            "cordova-plugin-inappbrowser": {}
+            "cordova-plugin-inappbrowser": {},
+            "cordova-plugin-statusbar": {}
         },
         "platforms": [
             "android",

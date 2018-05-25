@@ -17,8 +17,6 @@ class Duration extends Component {
     constructor(props){
         super(props);
 
-        this.interval = null;
-
         this.state = {
         };
     }
