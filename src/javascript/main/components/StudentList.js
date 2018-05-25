@@ -87,33 +87,24 @@ class StudentList extends React.Component {
         this.props.move(path.video);
     }
 
-    renderStudent(inx) {
-        const {students} = this.props;
-        if(students.length >= inx) {
-            const student = students[inx-1];
-            return (
-                <Item
-                    thumb={service.getValue(student, 'sdata.authDetail.isMail', false) ? studentM : studentW}
-                    extra={
-                      <CustomIcon type="MdPhone" className="call-button" onClick={e => this.confirmModal(e, student)}/>
-                    }>
-                    <span onClick={e => this.receiveCall(e, student)}>{student.authHumanName}</span>
-                </Item>
-            )
-        } else {
-            return (
-                <Item></Item>
-            )
-        }
+    renderStudent(student) {
+        return (
+            <Item
+                thumb={service.getValue(student, 'sdata.authDetail.isMail', false) ? studentM : studentW}
+                extra={
+                  <CustomIcon type="MdPhone" className="call-button" onClick={e => this.confirmModal(e, student)}/>
+                }>
+                <span onClick={e => this.receiveCall(e, student)}>{student.authHumanName}</span>
+            </Item>
+        )
     }
 
     render() {
+        const {students} = this.props;
         return (
             <div>
                 <List className="main-student-list">
-                    {this.renderStudent(1)}
-                    {this.renderStudent(2)}
-                    {this.renderStudent(3)}
+                    {students.map(student => this.renderStudent(student))}
                 </List>
             </div>
         );

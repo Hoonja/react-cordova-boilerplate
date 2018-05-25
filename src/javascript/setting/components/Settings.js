@@ -46,6 +46,7 @@ class Settings extends React.Component {
 
     renderLoginSetting() {
         const {parent} = this.props;
+        const name = parent.humanName + (((parent.userName||'').indexOf('@noid') > -1 || (parent.userName||'').indexOf('@named') > -1) ? '' : `(${parent.userName})`);
         return (
             <List renderHeader={() => '로그인'} className="setting-list-header">
                 <Item
@@ -53,7 +54,7 @@ class Settings extends React.Component {
                         <Button type="primary" size="small" className="setting-button" onClick={e => this.confirmLogout(e)}>로그아웃</Button>
                     }
                 >
-                    {`${parent.humanName}(${parent.userName})`}
+                    {name}
                 </Item>
             </List>
         );

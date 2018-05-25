@@ -52,8 +52,7 @@
         "redux-thunk": "^2.2.0",
         "socket.io": "^2.0.4",
         "socket.io-client": "^2.0.4",
-        "webpack-dev-server": "^2.10.1",
-        "wink_mobile_commons": "git+https://github.com/DanbiEduCorp/wink_mobile_commons.git",
+        "webrtc-adapter": "^6.1.5",
         "xcode": "^1.0.0"
     },
     "devDependencies": {
