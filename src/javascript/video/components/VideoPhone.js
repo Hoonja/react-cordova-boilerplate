@@ -103,6 +103,10 @@ class VideoPhone extends Component {
         video.style.zIndex = -2;
         video.style.width = '100%';
         video.style.height = '100%';
+        // iphone 5s 대응
+        if(window.document.body.offsetWidth < 375) {
+            video.style.objectFit = 'cover';
+        }
         video.className = 'peer-video';
 
         peerVideoBox.className = 'peer-video-box';
