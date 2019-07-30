@@ -13,8 +13,9 @@
     "dependencies": {
         "antd-mobile": "2.1.6",
         "axios": "^0.16.2",
-        "cordova-android": "^7.0.0",
+        "cordova-call": "^1.1.6",
         "cordova-ios": "^4.5.4",
+        "cordova-plugin-add-swift-support": "^2.0.2",
         "cordova-plugin-android-permissions": "^1.0.0",
         "cordova-plugin-app-version": "~0.1.9",
         "cordova-plugin-appavailability": "^0.4.2",
@@ -187,7 +188,6 @@
             "cordova-plugin-whitelist": {},
             "cordova-plugin-vibration": {},
             "cordova-plugin-app-version": {},
-            "cordova-plugin-iosrtc": {},
             "cordova-plugin-splashscreen": {},
             "cordova-plugin-customurlscheme": {
                 "URL_SCHEME": "parentvideoapp",
@@ -198,10 +198,12 @@
             "cordova-plugin-appavailability": {},
             "cordova-plugin-market": {},
             "cordova-plugin-inappbrowser": {},
-            "cordova-plugin-statusbar": {}
+            "cordova-plugin-statusbar": {},
+            "cordova-plugin-add-swift-support": {},
+            "cordova-plugin-iosrtc": {},
+            "cordova-call": {}
         },
         "platforms": [
-            "android",
             "ios"
         ]
     }

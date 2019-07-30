@@ -117,6 +117,9 @@ class VideoPhone extends Component {
             myVideoBoxSmall.appendChild(this.myVideo || document.getElementById("myVideo"));
             if (window.cordova && window.cordova.plugins && window.cordova.plugins.iosrtc) {
                 window.cordova.plugins.iosrtc.refreshVideos();
+                if(window.cordova.plugins.CordovaCall && window.cordova.plugins.CordovaCall.speakerOn) {
+                    window.cordova.plugins.CordovaCall.speakerOn(() => console.log('success'), () => console.log('fail'));
+                }
             }
         }, 300);
 
@@ -166,6 +169,9 @@ class VideoPhone extends Component {
         const {status} = this.props;
         const {student} = this.props.data;
         if(status === values.rtcStatus.CONNECT) {
+            if(window.cordova.plugins.CordovaCall && window.cordova.plugins.CordovaCall.speakerOff) {
+                window.cordova.plugins.CordovaCall.speakerOff(() => console.log('success'), () => console.log('fail'));
+            }
             this.props.updateRtcStatus(values.rtcStatus.DISCONNECT, student.id, false );
         }
         // this.stopVibrate();
